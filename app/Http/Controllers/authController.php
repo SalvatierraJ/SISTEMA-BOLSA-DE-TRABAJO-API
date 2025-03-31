@@ -18,11 +18,16 @@ class authController extends Controller
             'Rol'=> 'required|in:admin,user',
             'Clave' => 'required|min:6|confirmed'
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
             ], 422);
+        }
+        $existingUser = Usuario::where('Usuario', $request->input('Usuario'))->first();
+        if ($existingUser) {
+            return response()->json([
+                'message' => 'User already exists'
+            ], 409);
         }
 
         Usuario::create([
