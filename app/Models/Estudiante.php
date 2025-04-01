@@ -21,14 +21,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $Correo
  * @property string|null $Carrera
  * @property int|null $Id_Usuario
- * @property int|null $Id_Testimonio
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
  * @property Usuario|null $usuario
- * @property Testimonio|null $testimonio
  * @property Curriculum|null $curriculum
  * @property Collection|Postulacion[] $postulacions
+ * @property Testimonio|null $testimonio
  *
  * @package App\Models
  */
@@ -38,8 +37,7 @@ class Estudiante extends Model
 	protected $primaryKey = 'Id_Estudiante';
 
 	protected $casts = [
-		'Id_Usuario' => 'int',
-		'Id_Testimonio' => 'int'
+		'Id_Usuario' => 'int'
 	];
 
 	protected $fillable = [
@@ -49,18 +47,12 @@ class Estudiante extends Model
 		'Apellido',
 		'Correo',
 		'Carrera',
-		'Id_Usuario',
-		'Id_Testimonio'
+		'Id_Usuario'
 	];
 
 	public function usuario()
 	{
 		return $this->belongsTo(Usuario::class, 'Id_Usuario');
-	}
-
-	public function testimonio()
-	{
-		return $this->belongsTo(Testimonio::class, 'Id_Testimonio');
 	}
 
 	public function curriculum()
@@ -71,5 +63,10 @@ class Estudiante extends Model
 	public function postulacions()
 	{
 		return $this->hasMany(Postulacion::class, 'Id_Estudiante');
+	}
+
+	public function testimonio()
+	{
+		return $this->hasOne(Testimonio::class, 'Id_Estudiante');
 	}
 }

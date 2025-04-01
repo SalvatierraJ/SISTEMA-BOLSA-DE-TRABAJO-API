@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('testimonios', function (Blueprint $table) {
             $table->integer('Id_Testimonio', true);
+            $table->integer('Id_Estudiante')->unique('id_estudiante');
             $table->text('Comentario')->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();

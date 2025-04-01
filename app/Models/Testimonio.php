@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Testimonio
- * 
+ *
  * @property int $Id_Testimonio
  * @property string|null $Comentario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Collection|Estudiante[] $estudiantes
  *
  * @package App\Models
@@ -28,6 +28,7 @@ class Testimonio extends Model
 	protected $primaryKey = 'Id_Testimonio';
 
 	protected $fillable = [
+        'Id_Estudiante',
 		'Comentario'
 	];
 

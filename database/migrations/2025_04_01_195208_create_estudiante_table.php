@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('Correo', 100)->unique('correo');
             $table->string('Carrera', 100)->nullable();
             $table->integer('Id_Usuario')->nullable()->unique('id_usuario');
-            $table->integer('Id_Testimonio')->nullable()->index('id_testimonio');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
         });
