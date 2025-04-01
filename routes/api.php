@@ -6,6 +6,7 @@ use App\Http\Controllers\resumeController;
 use App\Http\Controllers\studentsController;
 use App\Http\Controllers\testimonialsController;
 use App\Http\Controllers\usersController;
+use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsUserAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,7 @@ Route::post('/login', [authController::class, 'login'])->name('login');
 
 //Private Routes
 
-Route::middleware([IsUserAuth::class])->group(function () {
+Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () {
     Route::get('/user', [authController::class, 'getUser'])->name('user.profile');
     Route::post('/logout', [authController::class, 'logout'])->name('user.logOut');
 
