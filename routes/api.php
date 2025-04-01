@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\authController;
+use App\Http\Controllers\companysController;
 use App\Http\Controllers\usersController;
 use App\Http\Middleware\IsUserAuth;
 use Illuminate\Http\Request;
@@ -23,6 +24,15 @@ Route::middleware([IsUserAuth::class])->group(function () {
     Route::put('/user/{id}', [usersController::class, 'updateUser'])->name('user.update');
     Route::delete('/user/{id}', [usersController::class, 'deleteUser'])->name('user.delete');
     Route::post('/user/register', [authController::class, 'register'])->name('user.register');
+    //endpoint for company
+    Route::get('/companys', [companysController::class, 'getAlllComapanys'])->name('company.all');
+    Route::get('/company/{id}', [companysController::class, 'getCompany'])->name('company.get');
+    Route::post('/company-create', [companysController::class, 'createCompany'])->name('company.create');
+    Route::put('/company/{id}', [companysController::class, 'updateCompany'])->name('company.update');
+    Route::delete('/company/{id}', [companysController::class, 'deleteCompany'])->name('company.delete');
+    //endpoint for jobs
+     
+
 });
 Route::get('/up', function () {
     return response()->json([
