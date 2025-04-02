@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\applicationsController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\companysController;
+use App\Http\Controllers\jobsController;
 use App\Http\Controllers\resumeController;
 use App\Http\Controllers\studentsController;
 use App\Http\Controllers\testimonialsController;
@@ -34,20 +36,22 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::post('/company-create', [companysController::class, 'createCompany'])->name('company.create');
     Route::put('/company/{id}', [companysController::class, 'updateCompany'])->name('company.update');
     Route::delete('/company/{id}', [companysController::class, 'deleteCompany'])->name('company.delete');
+    Route::post('/company/{id}/imagenes', [companysController::class, 'uploadImageCompany'])->name('company.uploadImage');
+    Route::delete('/company/{id}/imagenes', [companysController::class, 'deleteImageCompany'])->name('company.deleteImage');
     //endpoint for jobs
-    Route::get('/jobs', [companysController::class, 'getAllJobs'])->name('job.all');
-    Route::get('/job/{id}', [companysController::class, 'getJob'])->name('job.get');
-    Route::post('/job-create', [companysController::class, 'createJob'])->name('job.create');
-    Route::put('/job/{id}', [companysController::class, 'updateJob'])->name('job.update');
-    Route::delete('/job/{id}', [companysController::class, 'deleteJob'])->name('job.delete');
-    Route::post('/trabajos/{id}/imagenes', [companysController::class, 'job.uploadImage']);
-    Route::delete('/trabajos/{id}/imagenes', [companysController::class, 'job.deleteImage']);
+    Route::get('/jobs', [jobsController::class, 'getAllJobs'])->name('job.all');
+    Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
+    Route::post('/job-create', [jobsController::class, 'createJob'])->name('job.create');
+    Route::put('/job/{id}', [jobsController::class, 'updateJob'])->name('job.update');
+    Route::delete('/job/{id}', [jobsController::class, 'deleteJob'])->name('job.delete');
+    Route::post('/job/{id}/imagenes', [jobsController::class, 'job.uploadImage']);
+    Route::delete('/job/{id}/imagenes', [jobsController::class, 'job.deleteImage']);
     //endpoint for aplications
-    Route::get('/aplications', [companysController::class, 'getAllAplications'])->name('aplication.all');
-    Route::get('/aplication/{id}', [companysController::class, 'getAplication'])->name('aplication.get');
-    Route::post('/aplication-create', [companysController::class, 'createAplication'])->name('aplication.create');
-    Route::put('/aplication/{id}', [companysController::class, 'updateAplication'])->name('aplication.update');
-    Route::delete('/aplication/{id}', [companysController::class, 'deleteAplication'])->name('aplication.delete');
+    Route::get('/aplications', [applicationsController::class, 'getAllAplications'])->name('aplication.all');
+    Route::get('/aplication/{id}', [applicationsController::class, 'getAplication'])->name('aplication.get');
+    Route::post('/aplication-create', [applicationsController::class, 'createAplication'])->name('aplication.create');
+    Route::put('/aplication/{id}', [applicationsController::class, 'updateAplication'])->name('aplication.update');
+    Route::delete('/aplication/{id}', [applicationsController::class, 'deleteAplication'])->name('aplication.delete');
     //endpoint for resumes
     Route::get('/resumes', [resumeController::class, 'getAllResumes'])->name('resume.all');
     Route::get('/resume/{id}', [resumeController::class, 'getResume'])->name('resume.get');

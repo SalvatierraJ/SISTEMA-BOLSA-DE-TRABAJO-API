@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Empresa
- * 
+ *
  * @property int $Id_Empresa
  * @property string $Nombre
  * @property string|null $Sector
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $Id_Usuario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Usuario|null $usuario
  * @property Collection|Trabajo[] $trabajos
  *
@@ -45,6 +45,7 @@ class Empresa extends Model
 		'Direccion',
 		'Contacto',
 		'Direccion_Web',
+        'logotipo',
 		'Id_Usuario'
 	];
 
