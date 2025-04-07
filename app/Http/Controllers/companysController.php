@@ -28,7 +28,7 @@ class companysController extends Controller
             'Direccion' => 'nullable|string|max:255',
             'Contacto' => 'nullable|string|max:100',
             'Direccion_Web' => 'nullable|string|max:255',
-            'imagenes' => 'required|array',
+            'imagenes' => 'required|a   rray',
             'imagenes.*' => 'image|mimes:jpeg,png,jpg|max:2048'
         ]);
         if ($validate->fails()) {
