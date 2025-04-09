@@ -24,7 +24,7 @@ Route::post('/login', [authController::class, 'login'])->name('login');
 Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () {
     Route::get('/user', [authController::class, 'getUser'])->name('user.profile');
     Route::post('/logout', [authController::class, 'logout'])->name('user.logOut');
-
+    
     //endpoint for user
     Route::get('/users', [usersController::class, 'allUsers'])->name('user.all');
     Route::get('/user/{id}', [usersController::class, 'getUser'])->name('user.get');
