@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('Experiencia')->nullable();
             $table->json('Idiomas')->nullable();
             $table->integer('Id_Estudiante')->nullable()->unique('id_estudiante');
+            $table->json('configuracionCV')->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
         });

@@ -18,8 +18,8 @@ class CorsMiddleware
         $response = $next($request);
 
         return $response
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173') // Cambia según el puerto de tu app Vue
+            ->header('Access-Control-Allow-Origin', 'http://localhost:5173') 
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With');
-    }
+            ->header('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept, Origin, X-Requested-With');
+        }
 }

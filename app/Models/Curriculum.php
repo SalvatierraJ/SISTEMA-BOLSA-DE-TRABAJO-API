@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Curriculum
- * 
+ *
  * @property int $Id_Curriculum
  * @property string|null $Descripcion
  * @property array|null $Habilidades
@@ -19,9 +19,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $Experiencia
  * @property array|null $Idiomas
  * @property int|null $Id_Estudiante
+ * @property array $configuracion
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Estudiante|null $estudiante
  *
  * @package App\Models
@@ -36,7 +37,8 @@ class Curriculum extends Model
 		'Certificados' => 'json',
 		'Experiencia' => 'json',
 		'Idiomas' => 'json',
-		'Id_Estudiante' => 'int'
+		'Id_Estudiante' => 'int',
+		'configuracionCV' => 'json',
 	];
 
 	protected $fillable = [
@@ -45,7 +47,8 @@ class Curriculum extends Model
 		'Certificados',
 		'Experiencia',
 		'Idiomas',
-		'Id_Estudiante'
+		'Id_Estudiante',
+		'configuracionCV'
 	];
 
 	public function estudiante()

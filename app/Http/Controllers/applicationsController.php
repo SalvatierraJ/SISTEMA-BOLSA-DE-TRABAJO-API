@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Postulacion;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class applicationsController extends Controller

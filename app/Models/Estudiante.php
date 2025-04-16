@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property Usuario|null $usuario
  * @property Curriculum|null $curriculum
+ * @property Collection|Multimedia[] $multimedia
  * @property Collection|Postulacion[] $postulacions
  * @property Testimonio|null $testimonio
  *
@@ -58,6 +59,11 @@ class Estudiante extends Model
 	public function curriculum()
 	{
 		return $this->hasOne(Curriculum::class, 'Id_Estudiante');
+	}
+
+	public function multimedia()
+	{
+		return $this->hasMany(Multimedia::class, 'id_estudiante');
 	}
 
 	public function postulacions()

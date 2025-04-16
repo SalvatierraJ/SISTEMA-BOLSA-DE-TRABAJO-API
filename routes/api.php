@@ -31,10 +31,10 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/user/{id}', [usersController::class, 'deleteUser'])->name('user.delete');
     Route::post('/user/register', [authController::class, 'register'])->name('user.register');
     //endpoint for company
-    Route::get('/companys', [companysController::class, 'getAlllComapanys'])->name('company.all');
+    Route::get('/companies', [companysController::class, 'getAlllComapanys'])->name('company.all');
     Route::get('/company/{id}', [companysController::class, 'getCompany'])->name('company.get');
     Route::post('/company-create', [companysController::class, 'createCompany'])->name('company.create');
-    Route::put('/company/{id}', [companysController::class, 'updateCompany'])->name('company.update');
+    Route::put('/company-update/{id}', [companysController::class, 'updateCompany'])->name('company.update');
     Route::delete('/company/{id}', [companysController::class, 'deleteCompany'])->name('company.delete');
     Route::post('/company/{id}/imagenes', [companysController::class, 'uploadImageCompany'])->name('company.uploadImage');
     Route::delete('/company/{id}/imagenes', [companysController::class, 'deleteImageCompany'])->name('company.deleteImage');
@@ -58,6 +58,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::post('/resume-create', [resumeController::class, 'createResume'])->name('resume.create');
     Route::put('/resume/{id}', [resumeController::class, 'updateResume'])->name('resume.update');
     Route::delete('/resume/{id}', [resumeController::class, 'deleteResume'])->name('resume.delete');
+    Route::get('/resume/{id}/configuracion', [resumeController::class, 'getResumeConfiguration'])->name('resume.configuration');
     //endpoint for testimonials
     Route::get('/testimonials', [testimonialsController::class, 'getAllTestimonials'])->name('testimonial.all');
     Route::get('/testimonial/{id}', [testimonialsController::class, 'getTestimonial'])->name('testimonial.get');

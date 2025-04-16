@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('Direccion')->nullable();
             $table->string('Contacto', 50)->nullable();
             $table->string('Direccion_Web')->nullable();
-            $table->string('logotipo',255)->nullable();
             $table->integer('Id_Usuario')->nullable()->unique('id_usuario');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();

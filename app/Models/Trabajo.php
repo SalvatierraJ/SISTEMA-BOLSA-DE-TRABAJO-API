@@ -25,13 +25,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $Fecha_Inicio
  * @property Carbon|null $Fecha_Final
  * @property int|null $Duracion
- * @property string|null $Nombre_Imagen
  * @property string $Tipo
  * @property int|null $Id_Empresa
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
  * @property Empresa|null $empresa
+ * @property Collection|Multimedia[] $multimedia
  * @property Collection|Postulacion[] $postulacions
  *
  * @package App\Models
@@ -61,7 +61,6 @@ class Trabajo extends Model
 		'Fecha_Inicio',
 		'Fecha_Final',
 		'Duracion',
-		'Nombre_Imagen',
 		'Tipo',
 		'Id_Empresa'
 	];
@@ -69,6 +68,11 @@ class Trabajo extends Model
 	public function empresa()
 	{
 		return $this->belongsTo(Empresa::class, 'Id_Empresa');
+	}
+
+	public function multimedia()
+	{
+		return $this->hasMany(Multimedia::class, 'id_trabajo');
 	}
 
 	public function postulacions()

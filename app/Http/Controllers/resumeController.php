@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curriculum;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class resumeController extends Controller
@@ -49,6 +49,16 @@ class resumeController extends Controller
         }
         return response()->json([
             'resume' => $resume
+        ], 200);
+    }
+    public function getResumeConfiguration($id){
+        $resume = Curriculum::find($id);
+        if (!$resume) {
+            return response()->json([
+                'message' => 'No se encontró el curriculum'
+            ], 404);
+        }
+        return response()->json([$resume->configuracionCV
         ], 200);
     }
     public function updateResume(Request $request, $id){
