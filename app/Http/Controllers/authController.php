@@ -45,7 +45,7 @@ class authController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'Usuario' => 'required',
-            'Clave' => 'required'
+            'password' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -54,7 +54,7 @@ class authController extends Controller
 
         $credentials = [
             'Usuario' => $request->Usuario,
-            'password' => $request->Clave
+            'password' => $request->password
         ];
 
         try {
@@ -62,7 +62,9 @@ class authController extends Controller
                 return response()->json(['error'=> 'Credenciales inválidas'], 401);
             }
 
-            return response()->json(compact('token'));
+            $user = Auth::user(); // 👍
+        return response()->json(compact('token', 'user')); // 👍 devuelve token + usuario
+
         } catch (JWTException $e) {
             return response()->json(['error'=> 'No se pudo crear el token'], 500);
         }

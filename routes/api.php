@@ -10,6 +10,7 @@ use App\Http\Controllers\testimonialsController;
 use App\Http\Controllers\usersController;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsUserAuth;
+use App\Http\Controllers\multimedia_controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,7 @@ Route::post('/login', [authController::class, 'login'])->name('login');
 Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () {
     Route::get('/user', [authController::class, 'getUser'])->name('user.profile');
     Route::post('/logout', [authController::class, 'logout'])->name('user.logOut');
-
+    
     //endpoint for user
     Route::get('/users', [usersController::class, 'allUsers'])->name('user.all');
     Route::get('/user/{id}', [usersController::class, 'getUser'])->name('user.get');
@@ -71,7 +72,12 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::post('/student-create', [studentsController::class, 'createStudent'])->name('student.create');
     Route::put('/student/{id}', [studentsController::class, 'updateStudent'])->name('student.update');
     Route::delete('/student/{id}', [studentsController::class, 'deleteStudent'])->name('student.delete');
-
+    //endpoint for multimedia
+    Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');   
+    Route::post('/multimedia-create', [multimedia_controller::class, 'createMultimedia'])->name('multimedia.create');
+    Route::put('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
+    Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete'); 
+    
 });
 Route::get('/up', function () {
     return response()->json([

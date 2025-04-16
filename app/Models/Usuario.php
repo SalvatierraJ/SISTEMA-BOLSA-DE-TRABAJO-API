@@ -40,14 +40,13 @@ class Usuario extends Authenticatable implements JWTSubject
         'Clave',
         'remember_token',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'Clave' => 'hashed',
-        ];
+    public function username(){ 
+        return 'Usuario';
     }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+    
 
     // Sobrescribimos este método para que Laravel use 'Clave' como campo de contraseña
     public function getAuthPassword()
@@ -77,4 +76,3 @@ class Usuario extends Authenticatable implements JWTSubject
         return [];
     }
 }
-
