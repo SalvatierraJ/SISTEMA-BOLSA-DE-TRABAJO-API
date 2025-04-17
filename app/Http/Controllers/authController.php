@@ -45,7 +45,7 @@ class authController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'Usuario' => 'required',
-            'password' => 'required'
+            'Clave' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -54,7 +54,7 @@ class authController extends Controller
 
         $credentials = [
             'Usuario' => $request->Usuario,
-            'password' => $request->password
+            'Clave' => $request->Clave
         ];
 
         try {
