@@ -15,7 +15,7 @@ class authController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'Usuario' => 'required|min:3|max:100',
-            'Rol'=> 'required|in:admin,user',
+            'Rol' => 'required|in:admin,user',
             'Clave' => 'required|min:6|confirmed'
         ]);
         if ($validator->fails()) {
@@ -31,9 +31,9 @@ class authController extends Controller
         }
 
         Usuario::create([
-            'Usuario'=> $request->Usuario,
-            'Rol'=> $request->Rol,
-            'Clave'=> bcrypt($request->Clave)
+            'Usuario' => $request->Usuario,
+            'Rol' => $request->Rol,
+            'Clave' => bcrypt($request->Clave)
         ]);
 
         return response()->json([
@@ -49,34 +49,34 @@ class authController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors'=> $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $credentials = [
             'Usuario' => $request->Usuario,
-            'Clave' => $request->Clave
+            'password' => $request->Clave
         ];
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error'=> 'Credenciales inválidas'], 401);
+                return response()->json(['error' => 'Credenciales inválidas'], 401);
             }
 
-            $user = Auth::user(); // 👍
-        return response()->json(compact('token', 'user')); // 👍 devuelve token + usuario
-
+            return response()->json(compact('token'));
         } catch (JWTException $e) {
-            return response()->json(['error'=> 'No se pudo crear el token'], 500);
+            return response()->json(['error' => 'No se pudo crear el token'], 500);
         }
     }
 
-    public function getUser(){
+    public function getUser()
+    {
         $user = Auth::user();
         return response()->json(compact('user'));
     }
 
-    public function logout(){
+    public function logout()
+    {
         JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message'=> 'User logged out successfully']);
+        return response()->json(['message' => 'User logged out successfully']);
     }
 }
