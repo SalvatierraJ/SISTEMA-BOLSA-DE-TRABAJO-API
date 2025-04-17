@@ -75,59 +75,22 @@ class companysController extends Controller
             'logo'     => $multimedia->direccion
         ], 201);
     }
-    public function uploadImageCompany(Request $request, $id)
-    {
-        $empresa = Empresa::findOrFail($id);
-        if (!$empresa) {
-            return response()->json([
-                'mensaje' => 'Trabajo no encontrado'
-            ], 404);
-        }
-        $request->validate([
-            'imagenes' => 'required|array',
-            'imagenes.*' => 'image|mimes:jpeg,png,jpg|max:2048'
-        ]);
 
-        $archivosGuardados = [];
-        $manager = ImageManager::withDriver(new GdDriver());
-
-        foreach ($request->file('imagenes') as $imagen) {
-            $nombre = Str::random(10) . '.webp';
-            $ruta = storage_path('app/public/imagenes/' . $nombre);
-
-            $image = $manager->read($imagen);
-            $image->toWebp()->save($ruta);
-
-            $archivosGuardados[] = $nombre;
-        }
-
-        $empresa->logotipo = $archivosGuardados;
-        $empresa->save();
-
-        return response()->json([
-            'mensaje' => 'Imágenes subidas correctamente',
-            'archivos' => $archivosGuardados
-        ], 200);
-    }
     public function deleteImageCompany(Request $request, $id)
     {
-        $request->validate([
-            'imagen'=> 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
 
         $company = Empresa::with('multimedia')->find($id);
-        $nameImage = $company->multimedia->direccion;
+        $nameImage = $company->multimedia[0]->direccion;
 
 
-        if (Storage::disk('public')->exists('imagenes/' . $nameImage)) {
-            Storage::disk('public')->delete('imagenes/' . $nameImage);
+        if (Storage::disk('public')->exists($nameImage)) {
+            Storage::disk('public')->delete($nameImage);
         }
 
         $company->multimedia()->delete();
 
         return response()->json([
-            'mensaje' => 'Imagen eliminada correctamente',
-            'imagenes_restantes' => $company->logotipo
+            'mensaje' => 'Imagen eliminada correctamente'
         ], 200);
     }
     public function getCompany($id)
