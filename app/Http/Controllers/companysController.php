@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class companysController extends Controller
 {
@@ -122,11 +123,7 @@ class companysController extends Controller
             Storage::disk('public')->delete('imagenes/' . $nameImage);
         }
 
-        $images = $company->logotipo;
-        $images = array_filter($images, fn($img) => $img !== $nameImage);
-
-        $company->Nombre_Imagen = array_values($images);
-        $company->save();
+        $company->multimedia()->delete();
 
         return response()->json([
             'mensaje' => 'Imagen eliminada correctamente',
@@ -147,9 +144,9 @@ class companysController extends Controller
     }
     public function updateCompany(Request $request, $id)
     {
-        $companny = Empresa::find($id);
+        $company = Empresa::with('multimedia')->find($id);
 
-        if (!$companny) {
+        if (!$company) {
             return response()->json([
                 'message' => 'Company not found'
             ], 404);
@@ -162,6 +159,7 @@ class companysController extends Controller
             'Direccion' => 'sometimes|nullable|string|max:255',
             'Contacto' => 'sometimes|nullable|string|max:100',
             'Direccion_Web' => 'sometimes|nullable|string|max:255',
+            'imagen' => 'sometimes|required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($validate->fails()) {
@@ -170,19 +168,57 @@ class companysController extends Controller
             ], 422);
         }
 
-        $companny->update($request->only([
-            'Nombre',
-            'Sector',
-            'Correo',
-            'Direccion',
-            'Contacto',
-            'Direccion_Web'
-        ]));
+        try {
+            DB::beginTransaction();
 
-        return response()->json([
-            'message' => 'Company updated successfully',
-            'company' => $companny
-        ], 200);
+            $company->update($request->only([
+                'Nombre',
+                'Sector',
+                'Correo',
+                'Direccion',
+                'Contacto',
+                'Direccion_Web'
+            ]));
+
+            if ($request->hasFile('imagen')) {
+                if ($company->multimedia->isNotEmpty()) {
+                    foreach ($company->multimedia as $media) {
+                        if ($media->direccion && Storage::disk('public')->exists($media->direccion)) {
+                            Storage::disk('public')->delete($media->direccion);
+                        }
+                    }
+                    $company->multimedia()->delete();
+                }
+
+                $manager = new ImageManager(new GdDriver());
+                $imagen = $request->file('imagen');
+
+                $nombre = Str::random(10) . '.webp';
+                $rutaRelativa = 'storage/' . $nombre;
+                $rutaCompleta = storage_path('app/public/'.$rutaRelativa);
+
+                $image = $manager->read($imagen)->toWebp(80);
+                $image->save($rutaCompleta);
+
+                Multimedia::create([
+                    'id_empresa' => $company->Id_Empresa,
+                    'direccion' => 'storage/'.$rutaRelativa
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Company updated successfully',
+                'company' => $company->load('multimedia')
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error updating company',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function deleteCompany($id)
