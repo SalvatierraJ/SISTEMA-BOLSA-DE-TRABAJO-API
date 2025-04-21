@@ -25,12 +25,12 @@ class companysController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'Nombre'         => 'required|string|max:100',
-            'Sector'         => 'nullable|string|max:100',
+            'Sector'         => 'required|string|max:100',
             'Correo'         => 'required|email|max:100',
             'Direccion'      => 'nullable|string|max:255',
             'Contacto'       => 'nullable|string|max:100',
             'Direccion_Web'  => 'nullable|string|max:255',
-            'imagen'         => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            'imagen'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($validate->fails()) {
@@ -54,25 +54,26 @@ class companysController extends Controller
             'Contacto'       => $request->Contacto,
             'Direccion_Web'  => $request->Direccion_Web
         ]);
-        $manager = new ImageManager(new GdDriver());
-        $imagen = $request->file('imagen');
+        if ($request->hasFile('imagen')) {
+            $manager = new ImageManager(new GdDriver());
+            $imagen = $request->file('imagen');
 
-        $nombre = Str::random(10) . '.webp';
-        $rutaRelativa = 'storage/' . $nombre;
-        $rutaCompleta = storage_path('app/public/' . $rutaRelativa);
+            $nombre = Str::random(10) . '.webp';
+            $rutaRelativa = 'storage/' . $nombre;
+            $rutaCompleta = storage_path('app/public/' . $rutaRelativa);
 
-        $image = $manager->read($imagen)->toWebp(80);
-        $image->save($rutaCompleta);
+            $image = $manager->read($imagen)->toWebp(80);
+            $image->save($rutaCompleta);
 
-        $multimedia = Multimedia::create([
-            'id_empresa' => $empresa->Id_Empresa,
-            'direccion'  => 'storage/' . $rutaRelativa
-        ]);
-
+            $multimedia = Multimedia::create([
+                'id_empresa' => $empresa->Id_Empresa,
+                'direccion'  => 'storage/' . $rutaRelativa
+            ]);
+        }
 
         return response()->json([
             'company'  => $empresa,
-            'logo'     => $multimedia->direccion
+            'logo'     => $multimedia->direccion ?? null
         ], 201);
     }
 
@@ -158,14 +159,14 @@ class companysController extends Controller
 
                 $nombre = Str::random(10) . '.webp';
                 $rutaRelativa = 'storage/' . $nombre;
-                $rutaCompleta = storage_path('app/public/'.$rutaRelativa);
+                $rutaCompleta = storage_path('app/public/' . $rutaRelativa);
 
                 $image = $manager->read($imagen)->toWebp(80);
                 $image->save($rutaCompleta);
 
                 Multimedia::create([
                     'id_empresa' => $company->Id_Empresa,
-                    'direccion' => 'storage/'.$rutaRelativa
+                    'direccion' => 'storage/' . $rutaRelativa
                 ]);
             }
 
@@ -186,12 +187,13 @@ class companysController extends Controller
 
     public function deleteCompany($id)
     {
-        $companny = Empresa::find($id);
+        $companny = Empresa::with('multimedia')->find($id);
         if (!$companny) {
             return response()->json([
                 'message' => 'Company not found'
             ], 404);
         }
+        $companny->multimedia()->delete();
         $companny->delete();
         return response()->json([
             'message' => 'Company deleted successfully'
