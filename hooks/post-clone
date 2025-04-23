@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "🚀 Ejecutando post-clone hook..."
+
+# Ejecutar setup-hooks para copiar los hooks personalizados
+bash ./setup-hooks.sh
+
+# Ejecutar la configuración de Git Flow
+bash ./setup-gitflow.sh
