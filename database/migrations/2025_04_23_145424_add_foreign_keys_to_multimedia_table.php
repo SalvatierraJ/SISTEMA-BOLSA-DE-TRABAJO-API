@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('multimedia', function (Blueprint $table) {
-            $table->foreign(['id_estudiante'], 'multimedia_ibfk_1')->references(['Id_Estudiante'])->on('estudiante')->onUpdate('cascade')->onDelete('set null');
-            $table->foreign(['id_empresa'], 'multimedia_ibfk_2')->references(['Id_Empresa'])->on('empresas')->onUpdate('cascade')->onDelete('set null');
-            $table->foreign(['id_trabajo'], 'multimedia_ibfk_3')->references(['Id_Trabajo'])->on('trabajo')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign(['Id_Usuario'], 'multimedia_ibfk_1')->references(['Id_Usuario'])->on('usuario')->onUpdate('no action')->onDelete('no action');
+            $table->foreign(['Id_Trabajo'], 'multimedia_ibfk_2')->references(['Id_Trabajo'])->on('trabajo')->onUpdate('no action')->onDelete('no action');
         });
     }
 
@@ -26,7 +25,6 @@ return new class extends Migration
         Schema::table('multimedia', function (Blueprint $table) {
             $table->dropForeign('multimedia_ibfk_1');
             $table->dropForeign('multimedia_ibfk_2');
-            $table->dropForeign('multimedia_ibfk_3');
         });
     }
 };

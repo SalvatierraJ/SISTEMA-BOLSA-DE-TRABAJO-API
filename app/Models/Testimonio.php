@@ -13,31 +13,31 @@ use Illuminate\Database\Eloquent\Model;
  * Class Testimonio
  * 
  * @property int $Id_Testimonio
- * @property int $Id_Estudiante
  * @property string|null $Comentario
+ * @property int|null $Id_Usuario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Estudiante $estudiante
+ * @property Usuario|null $usuario
  *
  * @package App\Models
  */
 class Testimonio extends Model
 {
-	protected $table = 'testimonios';
+	protected $table = 'testimonio';
 	protected $primaryKey = 'Id_Testimonio';
 
 	protected $casts = [
-		'Id_Estudiante' => 'int'
+		'Id_Usuario' => 'int'
 	];
 
 	protected $fillable = [
-		'Id_Estudiante',
-		'Comentario'
+		'Comentario',
+		'Id_Usuario'
 	];
 
-	public function estudiante()
+	public function usuario()
 	{
-		return $this->belongsTo(Estudiante::class, 'Id_Estudiante');
+		return $this->belongsTo(Usuario::class, 'Id_Usuario');
 	}
 }

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('fase', function (Blueprint $table) {
             $table->integer('Id_Fase', true);
-            $table->string('Titulo', 100);
-            $table->string('Archivo')->nullable();
-            $table->string('Etapa', 50);
-            $table->integer('Id_Postulacion')->index('id_postulacion');
-            $table->timestamp('created_at')->nullable()->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->string('Titulo')->nullable();
+            $table->integer('Archivo')->nullable();
+            $table->integer('Resultado')->nullable();
+            $table->string('Etapa')->nullable();
+            $table->integer('Id_Postulacion')->nullable()->index('id_postulacion');
+            $table->timestamps();
         });
     }
 

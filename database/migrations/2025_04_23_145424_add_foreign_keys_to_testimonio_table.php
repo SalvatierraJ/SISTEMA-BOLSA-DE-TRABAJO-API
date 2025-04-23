@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('testimonios', function (Blueprint $table) {
-            $table->foreign(['Id_Estudiante'], 'testimonios_ibfk_1')->references(['Id_Estudiante'])->on('estudiante')->onUpdate('no action')->onDelete('no action');
+        Schema::table('testimonio', function (Blueprint $table) {
+            $table->foreign(['Id_Usuario'], 'testimonio_ibfk_1')->references(['Id_Usuario'])->on('usuario')->onUpdate('no action')->onDelete('no action');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('testimonios', function (Blueprint $table) {
-            $table->dropForeign('testimonios_ibfk_1');
+        Schema::table('testimonio', function (Blueprint $table) {
+            $table->dropForeign('testimonio_ibfk_1');
         });
     }
 };

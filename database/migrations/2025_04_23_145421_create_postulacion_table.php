@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('postulacion', function (Blueprint $table) {
             $table->integer('Id_Postulacion', true);
-            $table->timestamp('Fecha_Postulacion')->nullable()->useCurrent();
-            $table->string('Estado', 50)->nullable()->default('Pendiente');
+            $table->date('Fecha_Postulacion')->nullable();
+            $table->enum('Estado', ['Aceptado', 'Pendiente', 'Descartado'])->nullable()->default('Pendiente');
             $table->integer('Id_Estudiante')->nullable()->index('id_estudiante');
             $table->integer('Id_Trabajo')->nullable()->index('id_trabajo');
-            $table->timestamp('created_at')->nullable()->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->timestamps();
         });
     }
 

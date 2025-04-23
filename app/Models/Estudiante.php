@@ -14,21 +14,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class Estudiante
  * 
  * @property int $Id_Estudiante
- * @property string $Nro_Registro
- * @property string $Carnet
- * @property string $Nombre
- * @property string $Apellido
- * @property string $Correo
- * @property string|null $Carrera
- * @property int|null $Id_Usuario
+ * @property string|null $Nro_Registro
+ * @property int|null $Id_Persona
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Usuario|null $usuario
- * @property Curriculum|null $curriculum
- * @property Collection|Multimedia[] $multimedia
+ * @property Persona|null $persona
+ * @property Collection|Carrera[] $carreras
+ * @property Collection|Curriculum[] $curricula
  * @property Collection|Postulacion[] $postulacions
- * @property Testimonio|null $testimonio
  *
  * @package App\Models
  */
@@ -38,41 +32,33 @@ class Estudiante extends Model
 	protected $primaryKey = 'Id_Estudiante';
 
 	protected $casts = [
-		'Id_Usuario' => 'int'
+		'Id_Persona' => 'int'
 	];
 
 	protected $fillable = [
 		'Nro_Registro',
-		'Carnet',
-		'Nombre',
-		'Apellido',
-		'Correo',
-		'Carrera',
-		'Id_Usuario'
+		'Id_Persona'
 	];
 
-	public function usuario()
+	public function persona()
 	{
-		return $this->belongsTo(Usuario::class, 'Id_Usuario');
+		return $this->belongsTo(Persona::class, 'Id_Persona');
 	}
 
-	public function curriculum()
+	public function carreras()
 	{
-		return $this->hasOne(Curriculum::class, 'Id_Estudiante');
+		return $this->belongsToMany(Carrera::class, 'carrera_estudiante', 'Id_Estudiante', 'Id_Carrera')
+					->withPivot('Id_Carrera_Estudiante')
+					->withTimestamps();
 	}
 
-	public function multimedia()
+	public function curricula()
 	{
-		return $this->hasMany(Multimedia::class, 'id_estudiante');
+		return $this->hasMany(Curriculum::class, 'Id_Estudiante');
 	}
 
 	public function postulacions()
 	{
 		return $this->hasMany(Postulacion::class, 'Id_Estudiante');
-	}
-
-	public function testimonio()
-	{
-		return $this->hasOne(Testimonio::class, 'Id_Estudiante');
 	}
 }

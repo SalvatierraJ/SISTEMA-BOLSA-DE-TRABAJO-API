@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('empresas', function (Blueprint $table) {
-            $table->foreign(['Id_Usuario'], 'empresas_ibfk_1')->references(['Id_Usuario'])->on('usuario')->onUpdate('no action')->onDelete('no action');
+        Schema::create('estudiante', function (Blueprint $table) {
+            $table->integer('Id_Estudiante', true);
+            $table->string('Nro_Registro')->nullable();
+            $table->integer('Id_Persona')->nullable()->index('id_persona');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('empresas', function (Blueprint $table) {
-            $table->dropForeign('empresas_ibfk_1');
-        });
+        Schema::dropIfExists('estudiante');
     }
 };
