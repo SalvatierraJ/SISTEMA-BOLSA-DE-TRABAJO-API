@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "🔄 Ejecutando hook post-checkout..."
+
+if [ -f "./setup-gitflow.sh" ]; then
+    echo "▶️ Ejecutando setup-gitflow.sh..."
+    bash ./setup-gitflow.sh
+else
+    echo "❌ setup-gitflow.sh no encontrado."
+fi

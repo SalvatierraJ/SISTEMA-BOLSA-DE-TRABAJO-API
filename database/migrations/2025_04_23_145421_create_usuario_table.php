@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('usuario', function (Blueprint $table) {
             $table->integer('Id_Usuario', true);
-            $table->string('Usuario', 100)->unique('usuario');
+            $table->string('Usuario');
             $table->string('Clave');
-            $table->string('Rol', 50);
-            $table->string('Estado', 50)->nullable()->default('Habilitado');
-            $table->timestamp('created_at')->nullable()->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->enum('Estado', ['Activo', 'Inactivo'])->nullable()->default('Activo');
+            $table->integer('Id_Rol')->nullable()->index('id_rol');
+            $table->timestamps();
         });
     }
 

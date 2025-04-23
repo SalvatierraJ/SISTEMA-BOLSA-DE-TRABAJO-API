@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * Created by Reliese Model.
+ */
+
+namespace App\Models;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class Persona
+ * 
+ * @property int $Id_Persona
+ * @property string $Nombre
+ * @property string $Apellido1
+ * @property string|null $Apellido2
+ * @property int|null $CI
+ * @property string|null $Genero
+ * @property int|null $Id_Telefono
+ * @property string|null $Correo
+ * @property int|null $Id_Usuario
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * 
+ * @property Telefono|null $telefono
+ * @property Usuario|null $usuario
+ * @property Collection|Estudiante[] $estudiantes
+ *
+ * @package App\Models
+ */
+class Persona extends Model
+{
+	protected $table = 'persona';
+	protected $primaryKey = 'Id_Persona';
+
+	protected $casts = [
+		'CI' => 'int',
+		'Genero' => 'binary',
+		'Id_Telefono' => 'int',
+		'Id_Usuario' => 'int'
+	];
+
+	protected $fillable = [
+		'Nombre',
+		'Apellido1',
+		'Apellido2',
+		'CI',
+		'Genero',
+		'Id_Telefono',
+		'Correo',
+		'Id_Usuario'
+	];
+
+	public function telefono()
+	{
+		return $this->belongsTo(Telefono::class, 'Id_Telefono');
+	}
+
+	public function usuario()
+	{
+		return $this->belongsTo(Usuario::class, 'Id_Usuario');
+	}
+
+	public function estudiantes()
+	{
+		return $this->hasMany(Estudiante::class, 'Id_Persona');
+	}
+}

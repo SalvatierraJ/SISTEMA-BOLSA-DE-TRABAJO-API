@@ -13,22 +13,20 @@ return new class extends Migration
     {
         Schema::create('trabajo', function (Blueprint $table) {
             $table->integer('Id_Trabajo', true);
-            $table->string('Titulo');
+            $table->string('Titulo')->nullable();
             $table->text('Descripcion')->nullable();
-            $table->text('Requisitos')->nullable();
-            $table->text('Competencias')->nullable();
+            $table->json('Requisitos')->nullable();
+            $table->text('Competencia')->nullable();
             $table->string('Ubicacion')->nullable();
-            $table->decimal('Salario', 10)->nullable();
-            $table->string('Categoria', 100)->nullable();
-            $table->string('Modalidad', 50);
+            $table->decimal('Salario', 10, 0)->nullable();
+            $table->enum('Modalidad', ['Medio Tiempo', 'Tiempo Completo', 'Remoto', 'Hibrido'])->nullable();
             $table->date('Fecha_Inicio')->nullable();
-            $table->date('Fecha_Final')->nullable();
-            $table->integer('Duracion')->nullable();
-            $table->string('Nombre_Imagen')->nullable();
-            $table->string('Tipo', 50);
+            $table->date('Fecha_Fin')->nullable();
+            $table->string('Duracion')->nullable();
+            $table->enum('Estado', ['Activo', 'Inactivo'])->nullable()->default('Activo');
+            $table->binary('Tipo_Trabajo')->nullable();
             $table->integer('Id_Empresa')->nullable()->index('id_empresa');
-            $table->timestamp('created_at')->nullable()->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->timestamps();
         });
     }
 

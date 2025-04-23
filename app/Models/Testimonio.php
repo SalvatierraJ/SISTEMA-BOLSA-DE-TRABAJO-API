@@ -7,7 +7,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,24 +14,30 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $Id_Testimonio
  * @property string|null $Comentario
+ * @property int|null $Id_Usuario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Estudiante[] $estudiantes
+ * @property Usuario|null $usuario
  *
  * @package App\Models
  */
 class Testimonio extends Model
 {
-	protected $table = 'testimonios';
+	protected $table = 'testimonio';
 	protected $primaryKey = 'Id_Testimonio';
 
-	protected $fillable = [
-		'Comentario'
+	protected $casts = [
+		'Id_Usuario' => 'int'
 	];
 
-	public function estudiantes()
+	protected $fillable = [
+		'Comentario',
+		'Id_Usuario'
+	];
+
+	public function usuario()
 	{
-		return $this->hasMany(Estudiante::class, 'Id_Testimonio');
+		return $this->belongsTo(Usuario::class, 'Id_Usuario');
 	}
 }

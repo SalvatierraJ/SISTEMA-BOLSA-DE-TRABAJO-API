@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('estudiante', function (Blueprint $table) {
-            $table->foreign(['Id_Usuario'], 'estudiante_ibfk_1')->references(['Id_Usuario'])->on('usuario')->onUpdate('no action')->onDelete('no action');
-            $table->foreign(['Id_Testimonio'], 'estudiante_ibfk_2')->references(['Id_Testimonio'])->on('testimonios')->onUpdate('no action')->onDelete('no action');
+            $table->foreign(['Id_Persona'], 'estudiante_ibfk_1')->references(['Id_Persona'])->on('persona')->onUpdate('no action')->onDelete('no action');
         });
     }
 
@@ -24,7 +23,6 @@ return new class extends Migration
     {
         Schema::table('estudiante', function (Blueprint $table) {
             $table->dropForeign('estudiante_ibfk_1');
-            $table->dropForeign('estudiante_ibfk_2');
         });
     }
 };

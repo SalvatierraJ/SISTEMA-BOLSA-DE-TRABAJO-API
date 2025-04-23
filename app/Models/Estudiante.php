@@ -14,20 +14,14 @@ use Illuminate\Database\Eloquent\Model;
  * Class Estudiante
  * 
  * @property int $Id_Estudiante
- * @property string $Nro_Registro
- * @property string $Carnet
- * @property string $Nombre
- * @property string $Apellido
- * @property string $Correo
- * @property string|null $Carrera
- * @property int|null $Id_Usuario
- * @property int|null $Id_Testimonio
+ * @property string|null $Nro_Registro
+ * @property int|null $Id_Persona
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Usuario|null $usuario
- * @property Testimonio|null $testimonio
- * @property Curriculum|null $curriculum
+ * @property Persona|null $persona
+ * @property Collection|Carrera[] $carreras
+ * @property Collection|Curriculum[] $curricula
  * @property Collection|Postulacion[] $postulacions
  *
  * @package App\Models
@@ -38,34 +32,29 @@ class Estudiante extends Model
 	protected $primaryKey = 'Id_Estudiante';
 
 	protected $casts = [
-		'Id_Usuario' => 'int',
-		'Id_Testimonio' => 'int'
+		'Id_Persona' => 'int'
 	];
 
 	protected $fillable = [
 		'Nro_Registro',
-		'Carnet',
-		'Nombre',
-		'Apellido',
-		'Correo',
-		'Carrera',
-		'Id_Usuario',
-		'Id_Testimonio'
+		'Id_Persona'
 	];
 
-	public function usuario()
+	public function persona()
 	{
-		return $this->belongsTo(Usuario::class, 'Id_Usuario');
+		return $this->belongsTo(Persona::class, 'Id_Persona');
 	}
 
-	public function testimonio()
+	public function carreras()
 	{
-		return $this->belongsTo(Testimonio::class, 'Id_Testimonio');
+		return $this->belongsToMany(Carrera::class, 'carrera_estudiante', 'Id_Estudiante', 'Id_Carrera')
+					->withPivot('Id_Carrera_Estudiante')
+					->withTimestamps();
 	}
 
-	public function curriculum()
+	public function curricula()
 	{
-		return $this->hasOne(Curriculum::class, 'Id_Estudiante');
+		return $this->hasMany(Curriculum::class, 'Id_Estudiante');
 	}
 
 	public function postulacions()

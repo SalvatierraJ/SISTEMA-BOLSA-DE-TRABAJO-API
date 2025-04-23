@@ -1,87 +1,103 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * Class Usuario
+ *
+ * @property int $Id_Usuario
+ * @property string $Usuario
+ * @property string $Clave
+ * @property string|null $Estado
+ * @property int|null $Id_Rol
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property Rol|null $rol
+ * @property Collection|Empresa[] $empresas
+ * @property Collection|Multimedia[] $multimedia
+ * @property Collection|Persona[] $personas
+ * @property Collection|Testimonio[] $testimonios
+ *
+ * @package App\Models
+ */
 class Usuario extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'usuario'; // Indicar la tabla de tu BD
-    protected $primaryKey = 'Id_Usuario'; // Definir tu primary key personalizada
-    public $timestamps = true; // Laravel manejará created_at y updated_at
+	protected $table = 'usuario';
+	protected $primaryKey = 'Id_Usuario';
 
-    /**
-     * Los atributos que son asignables en masa (Mass-Assignable).
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'Usuario',
-        'Clave',
-        'Rol',
-        'Estado'
-    ];
+	protected $casts = [
+		'Id_Rol' => 'int',
+        'email_verified_at' => 'datetime',
+        'Clave' => 'hashed',
+	];
 
-    /**
-     * Los atributos que deben estar ocultos cuando se serializa el modelo.
-     *
-     * @var array
-     */
+	protected $fillable = [
+		'Usuario',
+		'Clave',
+		'Estado',
+		'Id_Rol'
+	];
     protected $hidden = [
         'Clave',
         'remember_token',
     ];
-
-    /**
-     * Los atributos que deben ser convertidos a tipos nativos.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
-     * Relaciones
-     */
-    public function empresa()
-    {
-        return $this->hasOne(Empresa::class, 'Id_Usuario');
+    public function username(){
+        return 'Usuario';
     }
 
-    public function estudiante()
-    {
-        return $this->hasOne(Estudiante::class, 'Id_Usuario');
-    }
 
-    /**
-     * Obtener el identificador que se almacenará en el JWT.
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
+	public function rol()
+	{
+		return $this->belongsTo(Rol::class, 'Id_Rol');
+	}
 
-    /**
-     * Devolver un array con los claims personalizados del JWT.
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
+	public function empresas()
+	{
+		return $this->hasMany(Empresa::class, 'Id_Usuario');
+	}
 
-    /**
-     * Reemplazar la columna `password` por `Clave`.
-     */
+	public function multimedia()
+	{
+		return $this->hasMany(Multimedia::class, 'Id_Usuario');
+	}
+
+	public function personas()
+	{
+		return $this->hasMany(Persona::class, 'Id_Usuario');
+	}
+
+	public function testimonios()
+	{
+		return $this->hasMany(Testimonio::class, 'Id_Usuario');
+	}
+    // Sobrescribimos este método para que Laravel use 'Clave' como campo de contraseña
     public function getAuthPassword()
     {
         return $this->Clave;
     }
+
+     // Métodos requeridos por JWT
+     public function getJWTIdentifier()
+     {
+         return $this->getKey();
+     }
+
+     public function getJWTCustomClaims()
+     {
+         return [];
+     }
 }
