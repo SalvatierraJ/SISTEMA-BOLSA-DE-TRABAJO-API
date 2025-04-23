@@ -12,15 +12,17 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Multimedia
  *
- * @property int $Id_Multimedia
- * @property int|null $Id_Usuario
- * @property int|null $Id_Trabajo
- * @property string|null $Tipo
- * @property string|null $Nombre
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property int $id_multimedia
+ * @property int|null $id_estudiante
+ * @property int|null $id_empresa
+ * @property int|null $id_trabajo
+ * @property string|null $tipo
+ * @property string|null $direccion
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
- * @property Usuario|null $usuario
+ * @property Estudiante|null $estudiante
+ * @property Empresa|null $empresa
  * @property Trabajo|null $trabajo
  *
  * @package App\Models
@@ -28,30 +30,34 @@ use Illuminate\Database\Eloquent\Model;
 class Multimedia extends Model
 {
 	protected $table = 'multimedia';
-	protected $primaryKey = 'Id_Multimedia';
+	protected $primaryKey = 'id_multimedia';
 
 	protected $casts = [
-		'Id_Usuario' => 'int',
-		'Id_Trabajo' => 'int'
+		'id_estudiante' => 'int',
+		'id_empresa' => 'int',
+		'id_trabajo' => 'int'
 	];
 
 	protected $fillable = [
-		'Id_Usuario',
-		'Id_Trabajo',
-		'Tipo',
-		'Nombre'
+		'id_estudiante',
+		'id_empresa',
+		'id_trabajo',
+		'tipo',
+		'direccion'
 	];
 
-	public function usuario()
+	public function estudiante()
 	{
-		return $this->belongsTo(Usuario::class, 'Id_Usuario');
+		return $this->belongsTo(Estudiante::class, 'id_estudiante');
+	}
+
+	public function empresa()
+	{
+		return $this->belongsTo(Empresa::class, 'id_empresa');
 	}
 
 	public function trabajo()
 	{
-		return $this->belongsTo(Trabajo::class, 'Id_Trabajo');
+		return $this->belongsTo(Trabajo::class, 'id_trabajo');
 	}
-    public function pordefecto(){
-        
-    }
 }
