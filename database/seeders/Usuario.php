@@ -23,6 +23,7 @@ class Usuario extends Seeder
         User::create(['Usuario' => "Entel", 'Clave' => Hash::make("123456"), 'Id_Rol' => 2, 'Estado' => 1]);
         User::create(['Usuario' => "Viva", 'Clave' => Hash::make("123456"), 'Id_Rol' => 2, 'Estado' => 1]);
         User::create(['Usuario' => "Cocacola", 'Clave' => Hash::make("123456"), 'Id_Rol' => 2, 'Estado' => 1]);
+        User::create(['Usuario' => "admin", 'Clave' => Hash::make("12345678"), 'Id_Rol' => 3, 'Estado' => 1]);
 
     }
 }

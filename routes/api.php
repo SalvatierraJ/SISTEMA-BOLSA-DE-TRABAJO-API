@@ -43,7 +43,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::post('/company/{id}/imagenes', [companysController::class, 'uploadImageCompany'])->name('company.uploadImage');
     Route::delete('/company/{id}/imagenes', [companysController::class, 'deleteImageCompany'])->name('company.deleteImage');
     //endpoint for jobs
-    Route::get('/jobs', [jobsController::class, 'getAllJobs'])->name('job.all');
+    Route::get('/jobs', [jobsController::class, 'AllJobs'])->name('job.all');
     Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
     Route::post('/job-create', [jobsController::class, 'createJob'])->name('job.create');
     Route::put('/job/{id}', [jobsController::class, 'updateJob'])->name('job.update');
