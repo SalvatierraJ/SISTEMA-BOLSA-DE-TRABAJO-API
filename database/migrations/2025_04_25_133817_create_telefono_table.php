@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('telefono', function (Blueprint $table) {
             $table->integer('Id_Telefono', true);
-            $table->integer('numero')->nullable();
+            $table->bigInteger('numero')->nullable();
+            $table->integer('Id_Persona')->nullable()->index('id_persona');
+            $table->integer('Id_Empresa')->nullable()->index('id_empresa');
             $table->timestamps();
         });
     }
