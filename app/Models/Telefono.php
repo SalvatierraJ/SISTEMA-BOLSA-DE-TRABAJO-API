@@ -29,11 +29,11 @@ class Telefono extends Model
 	protected $primaryKey = 'Id_Telefono';
 
 	protected $casts = [
-		'numero' => 'int'
+		'Numero' => 'int'
 	];
 
 	protected $fillable = [
-		'numero'
+		'Numero'
 	];
 
 	public function empresas()
