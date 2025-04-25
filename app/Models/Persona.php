@@ -19,15 +19,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $Apellido2
  * @property int|null $CI
  * @property string|null $Genero
- * @property int|null $Id_Telefono
  * @property string|null $Correo
  * @property int|null $Id_Usuario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Telefono|null $telefono
  * @property Usuario|null $usuario
  * @property Collection|Estudiante[] $estudiantes
+ * @property Collection|Telefono[] $telefonos
  *
  * @package App\Models
  */
@@ -39,7 +38,6 @@ class Persona extends Model
 	protected $casts = [
 		'CI' => 'int',
 		'Genero' => 'binary',
-		'Id_Telefono' => 'int',
 		'Id_Usuario' => 'int'
 	];
 
@@ -49,15 +47,9 @@ class Persona extends Model
 		'Apellido2',
 		'CI',
 		'Genero',
-		'Id_Telefono',
 		'Correo',
 		'Id_Usuario'
 	];
-
-	public function telefono()
-	{
-		return $this->belongsTo(Telefono::class, 'Id_Telefono');
-	}
 
 	public function usuario()
 	{
@@ -67,5 +59,10 @@ class Persona extends Model
 	public function estudiantes()
 	{
 		return $this->hasMany(Estudiante::class, 'Id_Persona');
+	}
+
+	public function telefonos()
+	{
+		return $this->hasMany(Telefono::class, 'Id_Persona');
 	}
 }

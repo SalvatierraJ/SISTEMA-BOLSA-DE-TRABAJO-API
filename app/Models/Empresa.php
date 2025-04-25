@@ -19,15 +19,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $Direccion
  * @property string|null $Direccion_Web
  * @property string|null $Correo
- * @property int|null $Id_Telefono
  * @property int|null $Id_Usuario
  * @property int|null $Id_Sector
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Telefono|null $telefono
  * @property Usuario|null $usuario
  * @property Sector|null $sector
+ * @property Collection|Telefono[] $telefonos
  * @property Collection|Trabajo[] $trabajos
  *
  * @package App\Models
@@ -39,7 +38,6 @@ class Empresa extends Model
 
 	protected $casts = [
 		'NIT' => 'int',
-		'Id_Telefono' => 'int',
 		'Id_Usuario' => 'int',
 		'Id_Sector' => 'int'
 	];
@@ -50,15 +48,9 @@ class Empresa extends Model
 		'Direccion',
 		'Direccion_Web',
 		'Correo',
-		'Id_Telefono',
 		'Id_Usuario',
 		'Id_Sector'
 	];
-
-	public function telefono()
-	{
-		return $this->belongsTo(Telefono::class, 'Id_Telefono');
-	}
 
 	public function usuario()
 	{
@@ -68,6 +60,11 @@ class Empresa extends Model
 	public function sector()
 	{
 		return $this->belongsTo(Sector::class, 'Id_Sector');
+	}
+
+	public function telefonos()
+	{
+		return $this->hasMany(Telefono::class, 'Id_Empresa');
 	}
 
 	public function trabajos()

@@ -11,6 +11,7 @@ use App\Http\Controllers\usersController;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsUserAuth;
 use App\Http\Controllers\multimedia_controller;
+use App\Http\Controllers\sectorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,7 @@ Route::post('/login', [authController::class, 'login'])->name('login');
 Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () {
     Route::get('/user', [authController::class, 'getUser'])->name('user.profile');
     Route::post('/logout', [authController::class, 'logout'])->name('user.logOut');
-    
+
     //endpoint for user
     Route::get('/users', [usersController::class, 'allUsers'])->name('user.all');
     Route::get('/user/{id}', [usersController::class, 'getUser'])->name('user.get');
@@ -39,6 +40,10 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/company/{id}', [companysController::class, 'deleteCompany'])->name('company.delete');
     Route::post('/company/{id}/imagenes', [companysController::class, 'uploadImageCompany'])->name('company.uploadImage');
     Route::delete('/company/{id}/imagenes', [companysController::class, 'deleteImageCompany'])->name('company.deleteImage');
+    Route::get('/sector/all', [companysController::class, 'getSector'])->name('company.sector');
+    Route::delete('/company/{id}/telefonos/{phoneId}', [companysController::class, 'deletePhone'])->name('company.deletePhone');
+    Route::post('/company/{id}/status', [companysController::class, 'toggleCompanyStatus'])->name('company.status');
+    Route::put('/company/{id}/credentials', [companysController::class, 'updateCredentials'])->name('company.updateCredentials');
     //endpoint for jobs
     Route::get('/jobs', [jobsController::class, 'getAllJobs'])->name('job.all');
     Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
@@ -73,11 +78,16 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/student/{id}', [studentsController::class, 'updateStudent'])->name('student.update');
     Route::delete('/student/{id}', [studentsController::class, 'deleteStudent'])->name('student.delete');
     //endpoint for multimedia
-    Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');   
+    Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');
     Route::post('/multimedia-create', [multimedia_controller::class, 'createMultimedia'])->name('multimedia.create');
     Route::put('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
-    Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete'); 
-    
+    Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete');
+    //endpoint for sectors
+    Route::get('/sectors', [sectorController::class, 'getSectors'])->name('sector.all');
+    Route::post('/sector-create', [sectorController::class, 'createSector'])->name('sector.create');
+    Route::put('/sector/{id}', [sectorController::class, 'updateSector'])->name('sector.update');
+    Route::delete('/sector/{id}', [sectorController::class, 'deleteSector'])->name('sector.delete');
+
 });
 Route::get('/up', function () {
     return response()->json([

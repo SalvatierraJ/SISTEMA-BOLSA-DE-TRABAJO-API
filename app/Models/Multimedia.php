@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Multimedia
- *
+ * 
  * @property int $Id_Multimedia
  * @property int|null $Id_Usuario
  * @property int|null $Id_Trabajo
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $Nombre
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
+ * 
  * @property Usuario|null $usuario
  * @property Trabajo|null $trabajo
  *
@@ -51,7 +51,4 @@ class Multimedia extends Model
 	{
 		return $this->belongsTo(Trabajo::class, 'Id_Trabajo');
 	}
-    public function pordefecto(){
-
-    }
 }
