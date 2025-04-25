@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Telefono
- * 
+ *
  * @property int $Id_Telefono
  * @property int|null $numero
  * @property int|null $Id_Persona
  * @property int|null $Id_Empresa
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Persona|null $persona
  * @property Empresa|null $empresa
  *

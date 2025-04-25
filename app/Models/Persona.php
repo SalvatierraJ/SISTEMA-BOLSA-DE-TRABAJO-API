@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Persona
- * 
+ *
  * @property int $Id_Persona
  * @property string $Nombre
  * @property string $Apellido1
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $Id_Usuario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Usuario|null $usuario
  * @property Collection|Estudiante[] $estudiantes
  * @property Collection|Telefono[] $telefonos

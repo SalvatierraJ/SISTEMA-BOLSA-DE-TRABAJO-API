@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RolController;
 use App\Http\Controllers\applicationsController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\companysController;
@@ -11,10 +12,11 @@ use App\Http\Controllers\usersController;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsUserAuth;
 use App\Http\Controllers\multimedia_controller;
-use App\Http\Controllers\sectorController;
+use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\TelefonoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\sectorController;
 //Public Routes
 Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
@@ -100,3 +102,25 @@ Route::fallback(function () {
         'message' => 'Page Not Found'
     ], 404);
 });
+
+// Rutas para gestión de roles
+Route::get('/roles', [RolController::class, 'index']);
+Route::get('/roles/{id}', [RolController::class, 'show']);
+Route::post('/roles', [RolController::class, 'store']);
+Route::put('/roles/{id}', [RolController::class, 'update']);
+Route::delete('/roles/{id}', [RolController::class, 'destroy']);
+Route::post('/roles/assign', [RolController::class, 'assignRolToUser']);
+
+// Rutas para Persona
+Route::get('/personas', [PersonaController::class, 'index']);
+Route::get('/personas/{id}', [PersonaController::class, 'show']);
+Route::post('/personas', [PersonaController::class, 'store']);
+Route::put('/personas/{id}', [PersonaController::class, 'update']);
+Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
+
+// Rutas para Teléfono
+Route::get('/telefonos', [TelefonoController::class, 'index']);
+Route::get('/telefonos/{id}', [TelefonoController::class, 'show']);
+Route::post('/telefonos', [TelefonoController::class, 'store']);
+Route::put('/telefonos/{id}', [TelefonoController::class, 'update']);
+Route::delete('/telefonos/{id}', [TelefonoController::class, 'destroy']);

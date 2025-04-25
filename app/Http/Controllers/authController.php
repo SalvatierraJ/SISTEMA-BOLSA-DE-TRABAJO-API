@@ -15,7 +15,7 @@ class authController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'Usuario' => 'required|min:3|max:100',
-            'Rol' => 'required|integer',
+            'Id_Rol' => 'required|integer',
             'Clave' => 'required|min:6|confirmed'
         ]);
         if ($validator->fails()) {
@@ -32,7 +32,7 @@ class authController extends Controller
 
         Usuario::create([
             'Usuario' => $request->Usuario,
-            'Rol' => $request->Rol,
+            'Id_Rol' => $request->Id_Rol, // Antes decia "Rol" pero en la bd es "Id_Rol"
             'Clave' => bcrypt($request->Clave)
         ]);
 
