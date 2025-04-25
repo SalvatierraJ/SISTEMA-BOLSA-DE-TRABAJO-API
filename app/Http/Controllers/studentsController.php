@@ -15,36 +15,30 @@ class studentsController extends Controller
             'students' => $students
         ], 200);
     }
+    
     public function createStudent(Request $request)
     {
-
         $validate = Validator::make($request->all(), [
             'Nro_Registro' => 'required|integer',
-            'Carnet'=> 'required|string|max:100',
-            'Nombre'=> 'required|string|max:100',
-            'Apellido'=> 'required|string|max:100',
-            'Correo'=> 'required|email|max:100',
-            'Carrera'=> 'required|string|max:100',
-            'Id_Usuario'=> 'required|integer',
+            'Id_Persona' => 'required|integer|exists:persona,Id_Persona|unique:estudiante,Id_Persona',
         ]);
+        
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
+        
         $student = Estudiante::create([
             'Nro_Registro' => $request->Nro_Registro,
-            'Carnet' => $request->Carnet,
-            'Nombre' => $request->Nombre,
-            'Apellido' => $request->Apellido,
-            'Correo' => $request->Correo,
-            'Carrera' => $request->Carrera,
-            'Id_Usuario' => $request->Id_Usuario,
+            'Id_Persona' => $request->Id_Persona,
         ]);
+        
         return response()->json([
             'student' => $student
         ], 201);
     }
+    
     public function getStudent($id)
     {
         $student = Estudiante::find($id);
@@ -57,6 +51,7 @@ class studentsController extends Controller
             'student' => $student
         ], 200);
     }
+    
     public function updateStudent(Request $request, $id)
     {
         $student = Estudiante::find($id);
@@ -65,26 +60,29 @@ class studentsController extends Controller
                 'message' => 'Student not found'
             ], 404);
         }
+        
         $validate = Validator::make($request->all(), [
             'Nro_Registro' => 'required|integer',
-            'Carnet'=> 'required|string|max:100',
-            'Nombre'=> 'required|string|max:100',
-            'Apellido'=> 'required|string|max:100',
-            'Correo'=> 'required|email|max:100',
-            'Carrera'=> 'required|string|max:100',
-            'Id_Usuario'=> 'required|integer',
+            'Id_Persona' => 'required|integer|exists:persona,Id_Persona|unique:estudiante,Id_Persona,'.$id.',Id_Estudiante',
         ]);
+        
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
-        $student->update($request->all());
+        
+        $student->update([
+            'Nro_Registro' => $request->Nro_Registro,
+            'Id_Persona' => $request->Id_Persona,
+        ]);
+        
         return response()->json([
             'message' => 'Student updated successfully',
             'student' => $student
         ], 200);
     }
+    
     public function deleteStudent($id)
     {
         $student = Estudiante::find($id);

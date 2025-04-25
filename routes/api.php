@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RolController;
 use App\Http\Controllers\applicationsController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\companysController;
@@ -11,9 +12,11 @@ use App\Http\Controllers\usersController;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\IsUserAuth;
 use App\Http\Controllers\multimedia_controller;
+use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\TelefonoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\sectorController;
 //Public Routes
 Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
@@ -24,7 +27,7 @@ Route::post('/login', [authController::class, 'login'])->name('login');
 Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () {
     Route::get('/user', [authController::class, 'getUser'])->name('user.profile');
     Route::post('/logout', [authController::class, 'logout'])->name('user.logOut');
-    
+
     //endpoint for user
     Route::get('/users', [usersController::class, 'allUsers'])->name('user.all');
     Route::get('/user/{id}', [usersController::class, 'getUser'])->name('user.get');
@@ -39,6 +42,10 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/company/{id}', [companysController::class, 'deleteCompany'])->name('company.delete');
     Route::post('/company/{id}/imagenes', [companysController::class, 'uploadImageCompany'])->name('company.uploadImage');
     Route::delete('/company/{id}/imagenes', [companysController::class, 'deleteImageCompany'])->name('company.deleteImage');
+    Route::get('/sector/all', [companysController::class, 'getSector'])->name('company.sector');
+    Route::delete('/company/{id}/telefonos/{phoneId}', [companysController::class, 'deletePhone'])->name('company.deletePhone');
+    Route::post('/company/{id}/status', [companysController::class, 'toggleCompanyStatus'])->name('company.status');
+    Route::put('/company/{id}/credentials', [companysController::class, 'updateCredentials'])->name('company.updateCredentials');
     //endpoint for jobs
     Route::get('/jobs', [jobsController::class, 'getAllJobs'])->name('job.all');
     Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
@@ -73,11 +80,16 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/student/{id}', [studentsController::class, 'updateStudent'])->name('student.update');
     Route::delete('/student/{id}', [studentsController::class, 'deleteStudent'])->name('student.delete');
     //endpoint for multimedia
-    Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');   
+    Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');
     Route::post('/multimedia-create', [multimedia_controller::class, 'createMultimedia'])->name('multimedia.create');
     Route::put('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
-    Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete'); 
-    
+    Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete');
+    //endpoint for sectors
+    Route::get('/sectors', [sectorController::class, 'getSectors'])->name('sector.all');
+    Route::post('/sector-create', [sectorController::class, 'createSector'])->name('sector.create');
+    Route::put('/sector/{id}', [sectorController::class, 'updateSector'])->name('sector.update');
+    Route::delete('/sector/{id}', [sectorController::class, 'deleteSector'])->name('sector.delete');
+
 });
 Route::get('/up', function () {
     return response()->json([
@@ -90,3 +102,25 @@ Route::fallback(function () {
         'message' => 'Page Not Found'
     ], 404);
 });
+
+// Rutas para gestión de roles
+Route::get('/roles', [RolController::class, 'index']);
+Route::get('/roles/{id}', [RolController::class, 'show']);
+Route::post('/roles', [RolController::class, 'store']);
+Route::put('/roles/{id}', [RolController::class, 'update']);
+Route::delete('/roles/{id}', [RolController::class, 'destroy']);
+Route::post('/roles/assign', [RolController::class, 'assignRolToUser']);
+
+// Rutas para Persona
+Route::get('/personas', [PersonaController::class, 'index']);
+Route::get('/personas/{id}', [PersonaController::class, 'show']);
+Route::post('/personas', [PersonaController::class, 'store']);
+Route::put('/personas/{id}', [PersonaController::class, 'update']);
+Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
+
+// Rutas para Teléfono
+Route::get('/telefonos', [TelefonoController::class, 'index']);
+Route::get('/telefonos/{id}', [TelefonoController::class, 'show']);
+Route::post('/telefonos', [TelefonoController::class, 'store']);
+Route::put('/telefonos/{id}', [TelefonoController::class, 'update']);
+Route::delete('/telefonos/{id}', [TelefonoController::class, 'destroy']);

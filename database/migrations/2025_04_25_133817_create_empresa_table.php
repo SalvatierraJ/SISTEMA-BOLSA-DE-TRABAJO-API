@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('Direccion')->nullable();
             $table->string('Direccion_Web')->nullable();
             $table->string('Correo')->nullable();
-            $table->integer('Id_Telefono')->nullable()->index('id_telefono');
             $table->integer('Id_Usuario')->nullable()->index('id_usuario');
             $table->integer('Id_Sector')->nullable()->index('id_sector');
             $table->timestamps();
