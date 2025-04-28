@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('Apellido1');
             $table->string('Apellido2')->nullable();
             $table->integer('CI')->nullable();
-            $table->binary('Genero')->nullable();
-            $table->integer('Id_Telefono')->nullable()->index('id_telefono');
+            $table->boolean('Genero')->nullable();
             $table->string('Correo')->nullable();
             $table->integer('Id_Usuario')->nullable()->index('id_usuario');
             $table->timestamps();

@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('empresa', function (Blueprint $table) {
-            $table->foreign(['Id_Telefono'], 'empresa_ibfk_1')->references(['Id_Telefono'])->on('telefono')->onUpdate('no action')->onDelete('no action');
             $table->foreign(['Id_Usuario'], 'empresa_ibfk_2')->references(['Id_Usuario'])->on('usuario')->onUpdate('no action')->onDelete('no action');
             $table->foreign(['Id_Sector'], 'empresa_ibfk_3')->references(['Id_Sector'])->on('sector')->onUpdate('no action')->onDelete('no action');
         });
@@ -24,7 +23,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('empresa', function (Blueprint $table) {
-            $table->dropForeign('empresa_ibfk_1');
             $table->dropForeign('empresa_ibfk_2');
             $table->dropForeign('empresa_ibfk_3');
         });
