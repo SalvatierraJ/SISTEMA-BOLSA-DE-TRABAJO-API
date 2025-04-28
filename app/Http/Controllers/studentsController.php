@@ -155,12 +155,10 @@ class studentsController extends Controller
                 'Correo' => $request->Correo
             ]);
 
-            // Actualizar estudiante
             $estudiante->update([
                 'Nro_Registro' => $request->Nro_Registro
             ]);
 
-            // Actualizar usuario
             if ($persona->usuario) {
                 $persona->usuario->update([
                     'Usuario' => $request->Nro_Registro,
@@ -168,11 +166,8 @@ class studentsController extends Controller
                 ]);
             }
 
-            // Actualizar teléfonos
-            // Primero eliminamos los teléfonos existentes
             Telefono::where('Id_Persona', $persona->Id_Persona)->delete();
 
-            // Luego creamos los nuevos teléfonos
             $telefonos = [];
             if ($request->has('telefonos') && !empty($request->telefonos)) {
                 foreach ($request->telefonos as $numero) {
