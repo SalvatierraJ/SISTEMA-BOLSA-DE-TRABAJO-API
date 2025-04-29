@@ -14,7 +14,8 @@ class studentsController extends Controller
 {
     public function allStudents()
     {
-        $students = Estudiante::all();
+        $students = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras', 'curricula', 'postulacions'])
+            ->get();
         return response()->json([
             'students' => $students
         ], 200);
@@ -31,29 +32,30 @@ class studentsController extends Controller
             'Genero' => 'nullable|boolean',
             'telefonos' => 'required|array|min:1',
             'telefonos.*' => 'required|integer|digits_between:7,15',
-            'Correo' => 'required|email|max:100|unique:persona,Correo'
+            'Correo' => 'required|email|max:100|unique:persona,Correo',
+            'Id_Carrera' => 'required|integer|exists:carrera,Id_Carrera'
         ]);
-
+    
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
-
+    
         try {
             DB::beginTransaction();
             $rolEstudiante = DB::table('rol')->where('Nombre', 'estudiante')->first();
             if (!$rolEstudiante) {
                 throw new \Exception('El rol de estudiante no está configurado en el sistema');
             }
-
+    
             $usuario = Usuario::create([
                 'Usuario' => $request->Nro_Registro,
                 'Clave' => bcrypt($request->CI),
                 'Id_Rol' => $rolEstudiante->Id_Rol,
                 'Estado' => 'Activo'
             ]);
-
+    
             $persona = Persona::create([
                 'Nombre' => $request->Nombre,
                 'Apellido1' => $request->Apellido1,
@@ -63,7 +65,7 @@ class studentsController extends Controller
                 'Correo' => $request->Correo,
                 'Id_Usuario' => $usuario->Id_Usuario
             ]);
-
+    
             $telefonos = [];
             if ($request->has('telefonos') && !empty($request->telefonos)) {
                 foreach ($request->telefonos as $numero) {
@@ -76,14 +78,17 @@ class studentsController extends Controller
                     }
                 }
             }
-
+    
             $estudiante = Estudiante::create([
                 'Nro_Registro' => $request->Nro_Registro,
                 'Id_Persona' => $persona->Id_Persona
             ]);
-
+    
+            // Asociar la carrera al estudiante
+            $estudiante->carreras()->attach($request->Id_Carrera);
+    
             DB::commit();
-
+    
             return response()->json([
                 'message' => 'Estudiante registrado exitosamente',
                 'estudiante' => $estudiante,
@@ -91,7 +96,7 @@ class studentsController extends Controller
                 'usuario' => $usuario,
                 'telefonos' => $telefonos
             ], 201);
-
+    
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
