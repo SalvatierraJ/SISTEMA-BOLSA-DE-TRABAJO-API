@@ -17,6 +17,7 @@ use App\Http\Controllers\TelefonoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\sectorController;
+use App\Http\Controllers\CarreraController;
 //Public Routes
 Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
@@ -74,7 +75,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/testimonial/{id}', [testimonialsController::class, 'updateTestimonial'])->name('testimonial.update');
     Route::delete('/testimonial/{id}', [testimonialsController::class, 'deleteTestimonial'])->name('testimonial.delete');
     //endpoint for Students
-    Route::get('/students', [studentsController::class, 'getAllStudents'])->name('student.all');
+    Route::get('/students', [studentsController::class, 'allStudents'])->name('student.all');
     Route::get('/student/{id}', [studentsController::class, 'getStudent'])->name('student.get');
     Route::post('/student-create', [studentsController::class, 'createStudent'])->name('student.create');
     Route::put('/student/{id}', [studentsController::class, 'updateStudent'])->name('student.update');
@@ -111,16 +112,14 @@ Route::put('/roles/{id}', [RolController::class, 'update']);
 Route::delete('/roles/{id}', [RolController::class, 'destroy']);
 Route::post('/roles/assign', [RolController::class, 'assignRolToUser']);
 
-// Rutas para Persona
-Route::get('/personas', [PersonaController::class, 'index']);
-Route::get('/personas/{id}', [PersonaController::class, 'show']);
-Route::post('/personas', [PersonaController::class, 'store']);
-Route::put('/personas/{id}', [PersonaController::class, 'update']);
-Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
-
 // Rutas para Teléfono
 Route::get('/telefonos', [TelefonoController::class, 'index']);
 Route::get('/telefonos/{id}', [TelefonoController::class, 'show']);
 Route::post('/telefonos', [TelefonoController::class, 'store']);
 Route::put('/telefonos/{id}', [TelefonoController::class, 'update']);
 Route::delete('/telefonos/{id}', [TelefonoController::class, 'destroy']);
+
+// Ruta para Carrera
+Route::middleware(['auth:api'])->group(function () {
+    Route::apiResource('carreras', CarreraController::class);
+});

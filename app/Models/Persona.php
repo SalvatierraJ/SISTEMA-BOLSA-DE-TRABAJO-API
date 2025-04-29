@@ -37,7 +37,7 @@ class Persona extends Model
 
 	protected $casts = [
 		'CI' => 'int',
-		'Genero' => 'binary',
+		'Genero' => 'boolean',
 		'Id_Usuario' => 'int'
 	];
 
@@ -48,7 +48,7 @@ class Persona extends Model
 		'CI',
 		'Genero',
 		'Correo',
-		'Id_Usuario'
+		'Id_Usuario',
 	];
 
 	public function usuario()

@@ -52,9 +52,6 @@ class RolController extends Controller
         ], 201);
     }
 
-    /**
-     * Actualizar un rol existente
-     */
     public function update(Request $request, $id)
     {
         $rol = Rol::find($id);
@@ -84,9 +81,6 @@ class RolController extends Controller
         ], 200);
     }
 
-    /**
-     * Eliminar un rol
-     */
     public function destroy($id)
     {
         $rol = Rol::find($id);
@@ -102,12 +96,8 @@ class RolController extends Controller
         ], 200);
     }
 
-    /**
-     * Asignar rol a un usuario
-     */
     public function assignRolToUser(Request $request)
     {
-        // Validación de datos
         $validate = Validator::make($request->all(), [
             'Id_Usuario' => 'required|integer|exists:usuario,Id_Usuario',
             'Id_Rol' => 'required|integer|exists:rol,Id_Rol',
@@ -119,7 +109,6 @@ class RolController extends Controller
             ], 422);
         }
     
-        // Buscar el usuario
         $usuario = Usuario::find($request->Id_Usuario);
         if (!$usuario) {
             return response()->json([
@@ -127,7 +116,6 @@ class RolController extends Controller
             ], 404);
         }
     
-        // Buscar el rol
         $rol = Rol::find($request->Id_Rol);
         if (!$rol) {
             return response()->json([
@@ -135,7 +123,6 @@ class RolController extends Controller
             ], 404);
         }
     
-        // Asignar el rol al usuario
         $usuario->Id_Rol = $request->Id_Rol;
         $usuario->save();
     
