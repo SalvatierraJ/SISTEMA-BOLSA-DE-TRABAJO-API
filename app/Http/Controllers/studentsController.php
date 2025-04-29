@@ -108,10 +108,11 @@ class studentsController extends Controller
     
     public function getStudent($id)
     {
-        $student = Estudiante::find($id);
+        $student = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras', 'curricula', 'postulacions'])
+            ->find($id);
         if (!$student) {
             return response()->json([
-                'message' => 'Student not found'
+                'message' => 'Estudiante no encontrado'
             ], 404);
         }
         return response()->json([
@@ -137,8 +138,10 @@ class studentsController extends Controller
             'Genero' => 'nullable|boolean',
             'telefonos' => 'required|array|min:1',
             'telefonos.*' => 'required|integer|digits_between:7,15',
-            'Correo' => 'required|email|max:100|unique:persona,Correo,'.$estudiante->persona->Id_Persona.',Id_Persona'
+            'Correo' => 'required|email|max:100|unique:persona,Correo,'.$estudiante->persona->Id_Persona.',Id_Persona',
+            'Id_Carrera' => 'required|integer|exists:carrera,Id_Carrera'
         ]);
+
 
         if ($validate->fails()) {
             return response()->json([
@@ -186,6 +189,9 @@ class studentsController extends Controller
                 }
             }
 
+            // Actualizar la relación con la carrera
+            $estudiante->carreras()->sync([$request->Id_Carrera]);
+
             DB::commit();
 
             return response()->json([
@@ -207,15 +213,43 @@ class studentsController extends Controller
     
     public function deleteStudent($id)
     {
-        $student = Estudiante::find($id);
-        if (!$student) {
+        try {
+            DB::beginTransaction();
+            
+            $student = Estudiante::find($id);
+            if (!$student) {
+                return response()->json([
+                    'message' => 'Estudiante no encontrado'
+                ], 404);
+            }
+
+            // Eliminar relaciones
+            $student->carreras()->detach();
+            
+            // Eliminar estudiante y sus relaciones
+            $persona = Persona::find($student->Id_Persona);
+            if ($persona) {
+                Telefono::where('Id_Persona', $persona->Id_Persona)->delete();
+                if ($persona->usuario) {
+                    $persona->usuario->delete();
+                }
+                $persona->delete();
+            }
+            
+            $student->delete();
+            
+            DB::commit();
+            
             return response()->json([
-                'message' => 'Student not found'
-            ], 404);
+                'message' => 'Estudiante eliminado exitosamente'
+            ], 200);
+            
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Error al eliminar el estudiante',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        $student->delete();
-        return response()->json([
-            'message' => 'Student deleted successfully'
-        ], 200);
     }
 }
