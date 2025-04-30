@@ -20,7 +20,7 @@ class studentsController extends Controller
             'students' => $students
         ], 200);
     }
-    
+
     public function createStudent(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -35,27 +35,27 @@ class studentsController extends Controller
             'Correo' => 'required|email|max:100|unique:persona,Correo',
             'Id_Carrera' => 'required|integer|exists:carrera,Id_Carrera'
         ]);
-    
+
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
-    
+
         try {
             DB::beginTransaction();
             $rolEstudiante = DB::table('rol')->where('Nombre', 'estudiante')->first();
             if (!$rolEstudiante) {
                 throw new \Exception('El rol de estudiante no está configurado en el sistema');
             }
-    
+
             $usuario = Usuario::create([
                 'Usuario' => $request->Nro_Registro,
                 'Clave' => bcrypt($request->CI),
                 'Id_Rol' => $rolEstudiante->Id_Rol,
                 'Estado' => 'Activo'
             ]);
-    
+
             $persona = Persona::create([
                 'Nombre' => $request->Nombre,
                 'Apellido1' => $request->Apellido1,
@@ -65,7 +65,7 @@ class studentsController extends Controller
                 'Correo' => $request->Correo,
                 'Id_Usuario' => $usuario->Id_Usuario
             ]);
-    
+
             $telefonos = [];
             if ($request->has('telefonos') && !empty($request->telefonos)) {
                 foreach ($request->telefonos as $numero) {
@@ -78,17 +78,16 @@ class studentsController extends Controller
                     }
                 }
             }
-    
+
             $estudiante = Estudiante::create([
                 'Nro_Registro' => $request->Nro_Registro,
                 'Id_Persona' => $persona->Id_Persona
             ]);
-    
-            // Asociar la carrera al estudiante
+            
             $estudiante->carreras()->attach($request->Id_Carrera);
-    
+
             DB::commit();
-    
+
             return response()->json([
                 'message' => 'Estudiante registrado exitosamente',
                 'estudiante' => $estudiante,
@@ -96,7 +95,7 @@ class studentsController extends Controller
                 'usuario' => $usuario,
                 'telefonos' => $telefonos
             ], 201);
-    
+
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -105,7 +104,7 @@ class studentsController extends Controller
             ], 500);
         }
     }
-    
+
     public function getStudent($id)
     {
         $student = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras', 'curricula', 'postulacions'])
@@ -119,7 +118,7 @@ class studentsController extends Controller
             'student' => $student
         ], 200);
     }
-    
+
     public function updateStudent(Request $request, $id)
     {
         $estudiante = Estudiante::find($id);
@@ -210,12 +209,12 @@ class studentsController extends Controller
             ], 500);
         }
     }
-    
+
     public function deleteStudent($id)
     {
         try {
             DB::beginTransaction();
-            
+
             $student = Estudiante::find($id);
             if (!$student) {
                 return response()->json([
@@ -225,7 +224,7 @@ class studentsController extends Controller
 
             // Eliminar relaciones
             $student->carreras()->detach();
-            
+
             // Eliminar estudiante y sus relaciones
             $persona = Persona::find($student->Id_Persona);
             if ($persona) {
@@ -235,15 +234,15 @@ class studentsController extends Controller
                 }
                 $persona->delete();
             }
-            
+
             $student->delete();
-            
+
             DB::commit();
-            
+
             return response()->json([
                 'message' => 'Estudiante eliminado exitosamente'
             ], 200);
-            
+
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([

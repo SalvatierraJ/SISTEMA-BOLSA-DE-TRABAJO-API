@@ -18,10 +18,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\sectorController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ChatbotController;
+
 //Public Routes
 Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
-
+Route::post('/chatbot', [ChatbotController::class, 'sendMessage'])->name('chatbot.sendMessage');
 
 //Private Routes
 
