@@ -85,8 +85,10 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     //endpoint for multimedia
     Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');
     Route::post('/multimedia-create', [multimedia_controller::class, 'createMultimedia'])->name('multimedia.create');
-    Route::put('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
+    Route::patch('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
+    Route::patch('/multimedia/{id}/estado', [multimedia_controller::class, 'updateStateMultimedia'])->name('multimedia.updateState');
     Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete');
+    Route::get('/multimedia-tipo/{tipo}', [multimedia_controller::class, 'getMultimediaByType'])->name('multimedia.getByType');
     //endpoint for sectors
     Route::get('/sectors', [sectorController::class, 'getSectors'])->name('sector.all');
     Route::post('/sector-create', [sectorController::class, 'createSector'])->name('sector.create');

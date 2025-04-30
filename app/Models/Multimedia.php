@@ -11,15 +11,18 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Multimedia
- * 
+ *
  * @property int $Id_Multimedia
  * @property int|null $Id_Usuario
  * @property int|null $Id_Trabajo
- * @property string|null $Tipo
+ * @property string|null $Titulo
+ * @property string|null $Descripcion
  * @property string|null $Nombre
+ * @property string|null $Tipo
+ * @property string|null $Estado
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Usuario|null $usuario
  * @property Trabajo|null $trabajo
  *
@@ -38,8 +41,11 @@ class Multimedia extends Model
 	protected $fillable = [
 		'Id_Usuario',
 		'Id_Trabajo',
+		'Titulo',
+		'Descripcion',
+		'Nombre',
 		'Tipo',
-		'Nombre'
+		'Estado'
 	];
 
 	public function usuario()
