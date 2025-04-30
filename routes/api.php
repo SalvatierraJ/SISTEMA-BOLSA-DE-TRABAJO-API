@@ -17,10 +17,13 @@ use App\Http\Controllers\TelefonoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\sectorController;
+use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ChatbotController;
+
 //Public Routes
 Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
-
+Route::post('/chatbot', [ChatbotController::class, 'sendMessage'])->name('chatbot.sendMessage');
 
 //Private Routes
 
@@ -74,7 +77,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/testimonial/{id}', [testimonialsController::class, 'updateTestimonial'])->name('testimonial.update');
     Route::delete('/testimonial/{id}', [testimonialsController::class, 'deleteTestimonial'])->name('testimonial.delete');
     //endpoint for Students
-    Route::get('/students', [studentsController::class, 'getAllStudents'])->name('student.all');
+    Route::get('/students', [studentsController::class, 'allStudents'])->name('student.all');
     Route::get('/student/{id}', [studentsController::class, 'getStudent'])->name('student.get');
     Route::post('/student-create', [studentsController::class, 'createStudent'])->name('student.create');
     Route::put('/student/{id}', [studentsController::class, 'updateStudent'])->name('student.update');
@@ -82,8 +85,10 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     //endpoint for multimedia
     Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');
     Route::post('/multimedia-create', [multimedia_controller::class, 'createMultimedia'])->name('multimedia.create');
-    Route::put('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
+    Route::patch('/multimedia/{id}', [multimedia_controller::class, 'updateMultimedia'])->name('multimedia.update');
+    Route::patch('/multimedia/{id}/estado', [multimedia_controller::class, 'updateStateMultimedia'])->name('multimedia.updateState');
     Route::delete('/multimedia/{id}', [multimedia_controller::class, 'deleteMultimedia'])->name('multimedia.delete');
+    Route::get('/multimedia-tipo/{tipo}', [multimedia_controller::class, 'getMultimediaByType'])->name('multimedia.getByType');
     //endpoint for sectors
     Route::get('/sectors', [sectorController::class, 'getSectors'])->name('sector.all');
     Route::post('/sector-create', [sectorController::class, 'createSector'])->name('sector.create');
@@ -111,16 +116,14 @@ Route::put('/roles/{id}', [RolController::class, 'update']);
 Route::delete('/roles/{id}', [RolController::class, 'destroy']);
 Route::post('/roles/assign', [RolController::class, 'assignRolToUser']);
 
-// Rutas para Persona
-Route::get('/personas', [PersonaController::class, 'index']);
-Route::get('/personas/{id}', [PersonaController::class, 'show']);
-Route::post('/personas', [PersonaController::class, 'store']);
-Route::put('/personas/{id}', [PersonaController::class, 'update']);
-Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
-
 // Rutas para Teléfono
 Route::get('/telefonos', [TelefonoController::class, 'index']);
 Route::get('/telefonos/{id}', [TelefonoController::class, 'show']);
 Route::post('/telefonos', [TelefonoController::class, 'store']);
 Route::put('/telefonos/{id}', [TelefonoController::class, 'update']);
 Route::delete('/telefonos/{id}', [TelefonoController::class, 'destroy']);
+
+// Ruta para Carrera
+Route::middleware(['auth:api'])->group(function () {
+    Route::apiResource('carreras', CarreraController::class);
+});

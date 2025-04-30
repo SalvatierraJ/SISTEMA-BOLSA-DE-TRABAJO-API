@@ -15,8 +15,11 @@ return new class extends Migration
             $table->integer('Id_Multimedia', true);
             $table->integer('Id_Usuario')->nullable()->index('id_usuario');
             $table->integer('Id_Trabajo')->nullable()->index('id_trabajo');
+            $table->string('Titulo')->nullable();
+            $table->string('Descripcion')->nullable();
             $table->string('Tipo')->nullable();
             $table->string('Nombre')->nullable();
+            $table->enum('Estado', ['Activo', 'Inactivo'])->nullable()->default('Activo');
             $table->timestamps();
         });
     }
