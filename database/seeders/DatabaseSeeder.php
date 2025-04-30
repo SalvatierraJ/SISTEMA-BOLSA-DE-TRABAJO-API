@@ -11,7 +11,7 @@ use Database\Seeders\TelefonoSeeder;
 use Database\Seeders\Usuario;
 use Database\Seeders\JobSeeder;
 use Database\Seeders\RolSeeder;
-
+use Database\Seeders\PersonaSeeder;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -22,14 +22,15 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
+            PersonaSeeder::class,
             RolSeeder::class,
-            TelefonoSeeder::class,
             SectorSeeder::class,
             Usuario::class,
             CompanySeeder::class,
+            TelefonoSeeder::class,
             JobSeeder::class,
         ]);
-   /*     User::factory()->create([
+   /*     User::factory()->create([ 
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]); */
