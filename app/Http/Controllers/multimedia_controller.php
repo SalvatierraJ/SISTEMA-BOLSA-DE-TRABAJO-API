@@ -9,7 +9,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Cloudinary;
 
 class multimedia_controller extends Controller
 {
@@ -84,26 +85,28 @@ class multimedia_controller extends Controller
             } catch (Exception $e) {
                 return response()->json(['message' => 'Error al procesar la imagen', 'error' => $e->getMessage()], 500);
             }
-        } elseif ($request->hasFile('Nombre') && $request->input('Tipo') === 'Video') {
+        }  elseif ($request->hasFile('Nombre') && $request->input('Tipo') === 'Video') {
             try {
-                $video = $request->file('Nombre');
-                $uploadResult = Cloudinary::upload($video->getRealPath(), [
+                $response = (new UploadApi())->upload($request->file('Nombre')->getRealPath(), [
                     'folder' => 'videos_utepsa',
                     'resource_type' => 'video'
                 ]);
 
-                if ($uploadResult && isset($uploadResult['secure_url'])) {
-                    $data['Nombre'] = $uploadResult['secure_url'];
-                } else {
-                    throw new Exception('Error al obtener la URL del video subido');
+                $data['Nombre'] = $response['secure_url'] ?? null;
+
+                if (!$data['Nombre']) {
+                    return response()->json(['message' => 'Error: Cloudinary no devolvió una URL'], 500);
                 }
+
             } catch (Exception $e) {
                 return response()->json([
                     'message' => 'Error al subir el video a Cloudinary',
                     'error' => $e->getMessage()
                 ], 500);
             }
-        } else {
+        }
+
+        else {
             $data['Nombre'] = null;
         }
 
