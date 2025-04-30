@@ -10,14 +10,27 @@ use App\Models\RegistroImagenes;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
+use App\Models\Multimedia;
+use PhpParser\Node\Expr\AssignOp\Mul;
 
 class jobsController extends Controller
 {
     public function allJobs()
     {
+        $imagenes = Multimedia::all();
         $job = Trabajo::all();
+        $jobs = [];
+        foreach($job as $trabajo) { 
+            foreach($imagenes as $imagen) {
+                if ($trabajo->Id_Trabajo == $imagen->Id_Trabajo) {
+                    $trabajo->Nombre_Imagen = asset($imagen->Nombre);
+                    array_push($jobs, $trabajo);
+                    break;
+                }
+            }
+        }
         return response()->json([
-            'jobs' => $job
+            'jobs' => $jobs
         ], 200);
     }
     public function createJob(Request $request)
@@ -46,14 +59,10 @@ class jobsController extends Controller
         }
         $archivosGuardados = [];
         $manager = ImageManager::withDriver(new GdDriver());
-        foreach ($request->file('imagenes') as $imagen) {
-            $nombre = Str::random(10) . '.webp';
-            $ruta = storage_path('app/public/imagenes/' . $nombre);
-
-            $image = $manager->read($imagen);
-            $image->toWebp()->save($ruta);
-            $archivosGuardados[] = $nombre;
-        }
+        $archivosGuardados = [];
+    
+        
+    
 
         $job = Trabajo::create([
             'Titulo'    => $request->Titulo,
@@ -71,8 +80,25 @@ class jobsController extends Controller
             'Tipo' => $request->Tipo,
             'Id_Empresa' => $request->Id_Empresa,
         ]);
+        if ($request->hasFile('imagenes')) {
+            foreach ($request->file('imagenes') as $imagen) {
+                $nombre = Str::random(10) . '.webp';  
+                $ruta = $imagen->storeAs('imagenes', $nombre); 
+                Storage::disk('public')->put($ruta, file_get_contents($imagen));
+                $imagePath = 'storage/imagenes/' . $nombre; 
+
+
+                Multimedia::create([
+                    'Nombre' => $imagePath,  
+                    'Tipo' => 'webp',  
+                    'Id_Trabajo' => $job->Id_Trabajo  
+                ]);
+    
+                $archivosGuardados[] = $imagePath;
+            }
+        }
         return response()->json([
-            'job' => $job
+            'job' => $job, 'img' => asset($archivosGuardados[0])
         ], 201);
     }
     public function uploadImageJob(Request $request, $id)
@@ -151,13 +177,15 @@ class jobsController extends Controller
     public function updateJob(Request $request, $id)
     {
         $job = Trabajo::find($id);
+    
         if (!$job) {
             return response()->json([
                 'mensaje' => 'Trabajo no encontrado'
             ], 404);
         }
+    
         $validate = Validator::make($request->all(), [
-            'Titulo'    => 'required|string|max:100',
+            'Titulo' => 'required|string|max:100',
             'Descripcion' => 'nullable|string|max:255',
             'Requisitos' => 'nullable|string|max:255',
             'Competencias' => 'nullable|string|max:255',
@@ -165,31 +193,47 @@ class jobsController extends Controller
             'Salario' => 'nullable|numeric',
             'Categoria' => 'nullable|string|max:100',
             'Modalidad' => 'required|string|max:100',
-            'Fecha_Inicio'  => 'required|date',
+            'Fecha_Inicio' => 'required|date',
             'Fecha_Final' => 'required|date',
             'Duracion' => 'nullable|integer',
             'Tipo' => 'required|string|max:100',
             'Id_Empresa' => 'nullable|integer'
         ]);
+    
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
+    
+        $archivosGuardados = []; // Inicializamos el arreglo de archivos guardados
+    
         if ($request->hasFile('imagenes')) {
-            $archivosGuardados = [];
-            $manager = ImageManager::withDriver(new GdDriver());
             foreach ($request->file('imagenes') as $imagen) {
                 $nombre = Str::random(10) . '.webp';
-                $ruta = storage_path('app/public/imagenes/' . $nombre);
-
-                $image = $manager->read($imagen);
-                $image->toWebp()->save($ruta);
-                $archivosGuardados[] = $nombre;
+                $ruta = $imagen->storeAs('imagenes', $nombre, 'public'); 
+    
+    
+                $imagePath = 'storage/imagenes/' . $nombre; // Ruta de la imagen
+    
+                $multimedia = Multimedia::where('Id_Trabajo', $job->Id_Trabajo)->first();
+                if ($multimedia) {
+                    $multimedia->Nombre = $imagePath; // Actualizamos la ruta de la imagen
+                    $multimedia->Tipo = 'webp';
+                    $multimedia->save();
+                } else {
+                    Multimedia::create([
+                        'Nombre' => $imagePath,
+                        'Tipo' => 'webp',
+                        'Id_Trabajo' => $job->Id_Trabajo
+                    ]);
+                }
+    
+                $archivosGuardados[] = $imagePath;
             }
         }
-        $job->update([
-            'Titulo'    => $request->Titulo,
+            $job->update([
+            'Titulo' => $request->Titulo,
             'Descripcion' => $request->Descripcion,
             'Requisitos' => $request->Requisitos,
             'Competencias' => $request->Competencias,
@@ -200,14 +244,16 @@ class jobsController extends Controller
             'Fecha_Inicio' => $request->Fecha_Inicio,
             'Fecha_Final' => $request->Fecha_Final,
             'Duracion' => $request->Duracion,
-            'Nombre_Imagen' => $archivosGuardados ,
+            'Nombre_Imagen' => json_encode($archivosGuardados), // Guardamos como JSON si es un array
             'Tipo' => $request->Tipo,
             'Id_Empresa' => $request->Id_Empresa
         ]);
+    
         return response()->json([
             'job' => $job
         ], 200);
     }
+    
     public function deleteJob($id)
     {
         $job = Trabajo::find($id);

@@ -46,7 +46,7 @@ class Trabajo extends Model
 		'Salario' => 'float',
 		'Fecha_Inicio' => 'datetime',
 		'Fecha_Fin' => 'datetime',
-		'Tipo_Trabajo' => 'binary',
+		'Tipo_Trabajo' => 'string', //Daba un error que el tipo de dato binary
 		'Id_Empresa' => 'int'
 	];
 

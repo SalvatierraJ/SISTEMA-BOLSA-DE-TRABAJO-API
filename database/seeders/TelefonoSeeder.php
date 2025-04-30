@@ -12,23 +12,10 @@ class TelefonoSeeder extends Seeder
      */
     public function run(): void
     {
-        Telefono::create(["Numero" => "123456789"]);
-        Telefono::create(["Numero" => "555555555"]);
-        Telefono::create(["Numero" => "987654321"]);
-        Telefono::create(["Numero" => "111222333"]);
-        Telefono::create(["Numero" => "444555666"]);
-        Telefono::create(["Numero" => "777888999"]);
-        Telefono::create(["Numero" => "000111222"]);
-        Telefono::create(["Numero" => "333444555"]);
-        Telefono::create(["Numero" => "666777888"]);
-        Telefono::create(["Numero" => "999000111"]);
-        Telefono::create(["Numero" => "222333444"]);
-        Telefono::create(["Numero" => "555666777"]);
-        Telefono::create(["Numero" => "888999000"]);
-        Telefono::create(["Numero" => "123123123"]);
-        Telefono::create(["Numero" => "456456456"]);
-        Telefono::create(["Numero" => "789789789"]);
-        Telefono::create(["Numero" => "321321321"]);
-        Telefono::create(["Numero" => "654654654"]);        
+        Telefono::create(["Numero" => "123456789", 'Id_Persona' =>1, 'Id_Empresa' => 1]);
+        Telefono::create(["Numero" => "555555555" , 'Id_Persona' =>2, 'Id_Empresa' => 2]);
+        Telefono::create(["Numero" => "987654321",  'Id_Persona' =>3, 'Id_Empresa' => 3]);
+        Telefono::create(["Numero" => "111222333", 'Id_Persona' =>4, 'Id_Empresa' => 4]);
+         
     }
 }
