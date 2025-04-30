@@ -12,7 +12,7 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
 use App\Models\Multimedia;
 use PhpParser\Node\Expr\AssignOp\Mul;
-
+use App\Models\Empresa;
 class jobsController extends Controller
 {
     public function allJobs()
@@ -20,6 +20,7 @@ class jobsController extends Controller
         $imagenes = Multimedia::all();
         $job = Trabajo::all();
         $jobs = [];
+        $trabajos = [];
         foreach($job as $trabajo) { 
             foreach($imagenes as $imagen) {
                 if ($trabajo->Id_Trabajo == $imagen->Id_Trabajo) {
@@ -29,6 +30,14 @@ class jobsController extends Controller
                 }
             }
         }
+        foreach($jobs as $trabajo) {
+            $empresa = Empresa::find($trabajo->Id_Empresa);
+            if ($empresa) {
+                $trabajo->Nombre_Empresa = $empresa->Nombre_Empresa;
+                array_push($trabajos, $trabajo);
+            } } 
+            $jobs = $trabajos;
+
         return response()->json([
             'jobs' => $jobs
         ], 200);
@@ -60,8 +69,13 @@ class jobsController extends Controller
         $archivosGuardados = [];
         $manager = ImageManager::withDriver(new GdDriver());
         $archivosGuardados = [];
-    
-        
+        $tipo = 'practica';
+        if($request->tipo == '1') { 
+            $tipo = 'trabajo';
+        }
+        if($request->tipo == '0') { 
+            $tipo = 'practica';
+        }
     
 
         $job = Trabajo::create([
@@ -74,11 +88,11 @@ class jobsController extends Controller
             'Categoria' => $request->Categoria,
             'Modalidad' => $request->Modalidad,
             'Fecha_Inicio' => $request->Fecha_Inicio,
-            'Fecha_Final' => $request->Fecha_Final,
+            'Fecha_Fin' => $request->Fecha_Final,
             'Duracion' => $request->Duracion,
             'Nombre_Imagen' => $archivosGuardados,
-            'Tipo' => $request->Tipo,
-            'Id_Empresa' => $request->Id_Empresa,
+            'Tipo_Trabajo' => $tipo,
+            'Id_Empresa' => $request->Empresa,
         ]);
         if ($request->hasFile('imagenes')) {
             foreach ($request->file('imagenes') as $imagen) {
