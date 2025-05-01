@@ -14,7 +14,7 @@ class studentsController extends Controller
 {
     public function allStudents()
     {
-        $students = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras', 'curricula', 'postulacions'])
+        $students = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras'])
             ->get();
         return response()->json([
             'students' => $students
@@ -83,7 +83,7 @@ class studentsController extends Controller
                 'Nro_Registro' => $request->Nro_Registro,
                 'Id_Persona' => $persona->Id_Persona
             ]);
-            
+
             $estudiante->carreras()->attach($request->Id_Carrera);
 
             DB::commit();
@@ -166,13 +166,6 @@ class studentsController extends Controller
                 'Nro_Registro' => $request->Nro_Registro
             ]);
 
-            if ($persona->usuario) {
-                $persona->usuario->update([
-                    'Usuario' => $request->Nro_Registro,
-                    'Clave' => $request->has('CI') ? bcrypt($request->CI) : $persona->usuario->Clave
-                ]);
-            }
-
             Telefono::where('Id_Persona', $persona->Id_Persona)->delete();
 
             $telefonos = [];
@@ -247,6 +240,50 @@ class studentsController extends Controller
             DB::rollback();
             return response()->json([
                 'message' => 'Error al eliminar el estudiante',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStudentCredentials(Request $request, $id)
+    {
+        $usuario = Usuario::find($id);
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no encontrado'
+            ], 404);
+        }
+
+        $validate = Validator::make($request->all(), [
+            'Usuario' => 'required|string|unique:usuario,Usuario',
+            'Clave' => 'required|string|min:6'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'errors' => $validate->errors()
+            ], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            
+            $usuario->update([
+                'Usuario' => $request->Usuario,
+                'Clave' => bcrypt($request->Clave)
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Credenciales del estudiante actualizadas exitosamente',
+                'usuario' => $usuario
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Error al actualizar las credenciales del estudiante',
                 'error' => $e->getMessage()
             ], 500);
         }
