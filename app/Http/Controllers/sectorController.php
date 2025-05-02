@@ -36,5 +36,5 @@ class sectorController extends Controller
         return response()->json([
             'message' => 'Sector deleted successfully'
         ], 200);
-    }   
+    }
 }
