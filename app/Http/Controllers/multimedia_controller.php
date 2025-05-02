@@ -10,13 +10,15 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Cloudinary\Api\Upload\UploadApi;
-use Cloudinary\Cloudinary;
 
 class multimedia_controller extends Controller
 {
     public function deleteMultimedia($id) {
         try {
-            $multimedia = multimedia::findOrFail($id);
+            $multimedia = Multimedia::where('Id_Multimedia', $id)
+            ->orWhere('Id_Usuario', $id)
+            ->orWhere('Id_Trabajo', $id)
+            ->firstOrFail();
             $multimedia->delete();
             return response()->json([
                 'message' => 'Multimedia deleted successfully'

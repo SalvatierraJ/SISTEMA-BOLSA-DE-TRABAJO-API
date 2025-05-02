@@ -15,7 +15,7 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Models\Usuario;
-
+use Cloudinary\Api\Upload\UploadApi;
 class companysController extends Controller
 {
     public function getAlllComapanys()
@@ -106,24 +106,16 @@ class companysController extends Controller
             }
 
             if ($request->hasFile('imagen')) {
-                $manager = new ImageManager(new GdDriver());
                 $imagen = $request->file('imagen');
-
-                $nombre = Str::random(10) . '.webp';
-                $rutaRelativa = 'Empresas/' . $nombre;
-                $rutaCompleta = storage_path('app/public/' . $rutaRelativa);
-
-                if (!Storage::disk('public')->exists('Empresas')) {
-                    Storage::disk('public')->makeDirectory('Empresas');
-                }
-
-                $image = $manager->read($imagen)->toWebp(80);
-                $image->save($rutaCompleta);
+                $response = (new UploadApi())->upload($imagen->getRealPath(), [
+                    'folder' => 'trabajos_utepsa',
+                    'resource_type' => 'image'
+                ]);
 
                 Multimedia::create([
                     'Id_Usuario' => $user->Id_Usuario,
                     'Tipo' => 'logo',
-                    'Nombre' => $rutaRelativa
+                    'Nombre' => $response['secure_url']
                 ]);
             }
 
@@ -183,7 +175,7 @@ class companysController extends Controller
     }
     public function getCompany($id)
     {
-        $company = Empresa::with('usuario.rol', 'sector', 'usuario.multimedia', 'telefono')->find($id);
+        $company = Empresa::with('usuario.rol', 'sector', 'usuario.multimedia', 'telefonos','trabajos','trabajos.multimedia',)->find($id);
         if (!$company) {
             return response()->json([
                 'message' => 'Company not found'
@@ -256,34 +248,35 @@ class companysController extends Controller
             }
 
             if ($request->hasFile('imagen')) {
+                // Eliminar imágenes anteriores si existen
                 if ($company->usuario->multimedia->isNotEmpty()) {
                     foreach ($company->usuario->multimedia as $media) {
-                        if ($media->Nombre && Storage::disk('public')->exists($media->Nombre)) {
-                            Storage::disk('public')->delete($media->Nombre);
-                        }
+                        // Si se desea, se puede eliminar también de Cloudinary usando su public_id si lo guardás
+                        $media->delete();
                     }
-                    $company->usuario->multimedia()->delete();
                 }
 
-                $manager = new ImageManager(new GdDriver());
                 $imagen = $request->file('imagen');
 
-                $nombre = Str::random(10) . '.webp';
-                $rutaRelativa = 'Empresas/' . $nombre;
-                $rutaCompleta = storage_path('app/public/' . $rutaRelativa);
+                try {
+                    $response = (new UploadApi())->upload($imagen->getRealPath(), [
+                        'folder' => 'trabajos_utepsa',
+                        'resource_type' => 'image'
+                    ]);
 
-                if (!Storage::disk('public')->exists('Empresas')) {
-                    Storage::disk('public')->makeDirectory('Empresas');
+                    // Guardar el nuevo registro en la tabla Multimedia
+                    Multimedia::create([
+                        'Id_Usuario' => $company->usuario->Id_Usuario,
+                        'Tipo' => 'logo',
+                        'Nombre' => $response['secure_url']
+                    ]);
+
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'message' => 'Error al subir la imagen a Cloudinary',
+                        'error' => $e->getMessage()
+                    ], 500);
                 }
-
-                $image = $manager->read($imagen)->toWebp(80);
-                $image->save($rutaCompleta);
-
-                Multimedia::create([
-                    'Id_Usuario' => $company->usuario->Id_Usuario,
-                    'Tipo' => 'logo',
-                    'Nombre' => $rutaRelativa
-                ]);
             }
 
             DB::commit();

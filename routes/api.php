@@ -58,6 +58,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/job/{id}', [jobsController::class, 'deleteJob'])->name('job.delete');
     Route::post('/job/{id}/imagenes', [jobsController::class, 'job.uploadImage']);
     Route::delete('/job/{id}/imagenes', [jobsController::class, 'job.deleteImage']);
+    Route::get('/jobs/{type}/type',[jobsController::class,'getjobsByType']);
     //endpoint for aplications
     Route::get('/aplications', [applicationsController::class, 'getAllAplications'])->name('aplication.all');
     Route::get('/aplication/{id}', [applicationsController::class, 'getAplication'])->name('aplication.get');
