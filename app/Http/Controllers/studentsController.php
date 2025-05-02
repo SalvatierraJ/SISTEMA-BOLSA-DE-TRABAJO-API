@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estudiante;
-use App\Models\Persona;
-use App\Models\Telefono;
-use App\Models\Usuario;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -24,6 +20,7 @@ class studentsController extends Controller
     public function createStudent(Request $request)
     {
         $validate = Validator::make($request->all(), [
+<<<<<<< HEAD
             'Nro_Registro' => 'required|string|unique:estudiante,Nro_Registro',
             'CI' => 'required|integer|unique:persona,CI',
             'Nombre' => 'required|string|max:100',
@@ -34,13 +31,18 @@ class studentsController extends Controller
             'telefonos.*' => 'required|integer|digits_between:7,15',
             'Correo' => 'required|email|max:100|unique:persona,Correo',
             'Id_Carrera' => 'required|integer|exists:carrera,Id_Carrera'
+=======
+            'Nro_Registro' => 'required|integer',
+            'Id_Persona' => 'required|integer|exists:persona,Id_Persona|unique:estudiante,Id_Persona',
+>>>>>>> 84d54c2b8c4a93c9bffecf7f25bf8a9139cc4e31
         ]);
-
+        
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
+<<<<<<< HEAD
 
         try {
             DB::beginTransaction();
@@ -103,6 +105,17 @@ class studentsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+=======
+        
+        $student = Estudiante::create([
+            'Nro_Registro' => $request->Nro_Registro,
+            'Id_Persona' => $request->Id_Persona,
+        ]);
+        
+        return response()->json([
+            'student' => $student
+        ], 201);
+>>>>>>> 84d54c2b8c4a93c9bffecf7f25bf8a9139cc4e31
     }
 
     public function getStudent($id)
@@ -121,14 +134,15 @@ class studentsController extends Controller
 
     public function updateStudent(Request $request, $id)
     {
-        $estudiante = Estudiante::find($id);
-        if (!$estudiante) {
+        $student = Estudiante::find($id);
+        if (!$student) {
             return response()->json([
-                'message' => 'Estudiante no encontrado'
+                'message' => 'Student not found'
             ], 404);
         }
-
+        
         $validate = Validator::make($request->all(), [
+<<<<<<< HEAD
             'Nro_Registro' => 'required|string|unique:estudiante,Nro_Registro,'.$id.',Id_Estudiante',
             'CI' => 'required|integer|unique:persona,CI,'.$estudiante->persona->Id_Persona.',Id_Persona',
             'Nombre' => 'required|string|max:100',
@@ -142,11 +156,18 @@ class studentsController extends Controller
         ]);
 
 
+=======
+            'Nro_Registro' => 'required|integer',
+            'Id_Persona' => 'required|integer|exists:persona,Id_Persona|unique:estudiante,Id_Persona,'.$id.',Id_Estudiante',
+        ]);
+        
+>>>>>>> 84d54c2b8c4a93c9bffecf7f25bf8a9139cc4e31
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
+<<<<<<< HEAD
 
         try {
             DB::beginTransaction();
@@ -201,6 +222,18 @@ class studentsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+=======
+        
+        $student->update([
+            'Nro_Registro' => $request->Nro_Registro,
+            'Id_Persona' => $request->Id_Persona,
+        ]);
+        
+        return response()->json([
+            'message' => 'Student updated successfully',
+            'student' => $student
+        ], 200);
+>>>>>>> 84d54c2b8c4a93c9bffecf7f25bf8a9139cc4e31
     }
 
     public function deleteStudent($id)
