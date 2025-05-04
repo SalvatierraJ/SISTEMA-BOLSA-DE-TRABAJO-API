@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('empresa', function (Blueprint $table) {
             $table->integer('Id_Empresa', true);
-            $table->integer('NIT')->nullable();
+            $table->text('Descripcion')->nullable();
             $table->string('Nombre')->nullable();
             $table->string('Direccion')->nullable();
             $table->string('Direccion_Web')->nullable();
             $table->string('Correo')->nullable();
+            $table->string('Redes_Sociales')->nullable();
             $table->integer('Id_Usuario')->nullable()->index('id_usuario');
             $table->integer('Id_Sector')->nullable()->index('id_sector');
             $table->timestamps();

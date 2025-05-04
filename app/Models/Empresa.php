@@ -37,17 +37,18 @@ class Empresa extends Model
 	protected $primaryKey = 'Id_Empresa';
 
 	protected $casts = [
-		'NIT' => 'int',
+		'Descripcion' => 'string',
 		'Id_Usuario' => 'int',
 		'Id_Sector' => 'int'
 	];
 
 	protected $fillable = [
-		'NIT',
+		'Descripcion',
 		'Nombre',
 		'Direccion',
 		'Direccion_Web',
 		'Correo',
+		'Redes_Sociales',
 		'Id_Usuario',
 		'Id_Sector'
 	];
