@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Models\Usuario;
 use Cloudinary\Api\Upload\UploadApi;
+
 class companysController extends Controller
 {
     public function getAlllComapanys()
@@ -128,7 +129,6 @@ class companysController extends Controller
                     'email' => $user->Usuario
                 ]
             ], 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -152,8 +152,8 @@ class companysController extends Controller
             DB::beginTransaction();
 
             foreach ($company->usuario->multimedia as $media) {
-                if ($media->Nombre && Storage::disk('public')->exists($media->Nombre)) {
-                    Storage::disk('public')->delete($media->Nombre);
+                if ($media->Nombre) {
+                    $this->eliminarDeCloudinary($media->Nombre);
                 }
             }
 
@@ -164,7 +164,6 @@ class companysController extends Controller
             return response()->json([
                 'message' => 'Company images deleted successfully'
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -175,7 +174,7 @@ class companysController extends Controller
     }
     public function getCompany($id)
     {
-        $company = Empresa::with('usuario.rol', 'sector', 'usuario.multimedia', 'telefonos','trabajos','trabajos.multimedia',)->find($id);
+        $company = Empresa::with('usuario.rol', 'sector', 'usuario.multimedia', 'telefonos', 'trabajos', 'trabajos.multimedia',)->find($id);
         if (!$company) {
             return response()->json([
                 'message' => 'Company not found'
@@ -248,10 +247,10 @@ class companysController extends Controller
             }
 
             if ($request->hasFile('imagen')) {
-                // Eliminar imágenes anteriores si existen
+                // Eliminar imágenes anteriores si existe
                 if ($company->usuario->multimedia->isNotEmpty()) {
                     foreach ($company->usuario->multimedia as $media) {
-                        // Si se desea, se puede eliminar también de Cloudinary usando su public_id si lo guardás
+                        $this->eliminarDeCloudinary($media->Nombre);
                         $media->delete();
                     }
                 }
@@ -270,7 +269,6 @@ class companysController extends Controller
                         'Tipo' => 'logo',
                         'Nombre' => $response['secure_url']
                     ]);
-
                 } catch (\Exception $e) {
                     return response()->json([
                         'message' => 'Error al subir la imagen a Cloudinary',
@@ -285,7 +283,6 @@ class companysController extends Controller
                 'message' => 'Company updated successfully',
                 'company' => $company->load('usuario.rol', 'sector', 'usuario.multimedia', 'telefonos')
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -319,7 +316,12 @@ class companysController extends Controller
                 $company->telefonos()->delete();
             }
 
-            $company->usuario->multimedia()->delete();
+            if ($company->usuario->multimedia->isNotEmpty()) {
+                foreach ($company->usuario->multimedia as $media) {
+                    $this->eliminarDeCloudinary($media->Nombre);
+                    $media->delete();
+                }
+            }
             $company->delete();
             $company->usuario->delete();
 
@@ -328,7 +330,6 @@ class companysController extends Controller
             return response()->json([
                 'message' => 'Company and associated data deleted successfully'
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -362,7 +363,6 @@ class companysController extends Controller
                 'message' => 'Company status updated successfully',
                 'status' => $newStatus
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -400,7 +400,6 @@ class companysController extends Controller
             return response()->json([
                 'message' => 'Phone number deleted successfully'
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -460,13 +459,35 @@ class companysController extends Controller
                 'message' => 'Company credentials updated successfully',
                 'company' => $company->load('usuario')
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Error updating company credentials',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    private function eliminarDeCloudinary($url)
+    {
+        if (!$url) return;
+
+        $parsed = parse_url($url);
+        $path = $parsed['path'] ?? null;
+
+        if ($path) {
+            $segments = explode('/', ltrim($path, '/'));
+            $publicIdWithExt = array_pop($segments);
+            $publicId = pathinfo($publicIdWithExt, PATHINFO_FILENAME);
+            $folder = implode('/', $segments);
+
+            $fullPublicId = $folder . '/' . $publicId;
+
+            $resourceType = (str_contains($url, '/video/')) ? 'video' : 'image';
+
+            (new UploadApi())->destroy($fullPublicId, [
+                'resource_type' => $resourceType
+            ]);
         }
     }
 }

@@ -5,10 +5,6 @@ use App\Models\multimedia;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Cloudinary\Api\Upload\UploadApi;
 
 class multimedia_controller extends Controller
@@ -19,6 +15,28 @@ class multimedia_controller extends Controller
             ->orWhere('Id_Usuario', $id)
             ->orWhere('Id_Trabajo', $id)
             ->firstOrFail();
+
+            if ($multimedia->Nombre) {
+                $url = $multimedia->Nombre;
+                $parsed = parse_url($url);
+                $path = $parsed['path'] ?? null;
+
+                if ($path) {
+                    $segments = explode('/', ltrim($path, '/'));
+                    $publicIdWithExt = array_pop($segments);
+                    $publicId = pathinfo($publicIdWithExt, PATHINFO_FILENAME);
+                    $folder = implode('/', $segments);
+
+                    $fullPublicId = $folder . '/' . $publicId;
+
+                    $resourceType = (str_contains($url, '/video/')) ? 'video' : 'image';
+
+                    (new UploadApi())->destroy($fullPublicId, [
+                        'resource_type' => $resourceType
+                    ]);
+                }
+            }
+
             $multimedia->delete();
             return response()->json([
                 'message' => 'Multimedia deleted successfully'
@@ -70,20 +88,14 @@ class multimedia_controller extends Controller
         $data = $request->except('Nombre');
 
         if ($request->hasFile('Nombre') && $request->input('Tipo') === 'heroicon') {
-            $carpetaBase = 'heroicon';
-            $nombreWebp = Str::random(40) . '.webp';
-            $rutaRelativa = 'storage/' . $carpetaBase . '/' . $nombreWebp;
-            $rutaCompleta = public_path($rutaRelativa);
+            $response = (new UploadApi())->upload($request->file('Nombre')->getRealPath(), [
+                'folder' => 'Logo_Utepsa',
+                'resource_type' => 'image'
+            ]);
 
-            if (!Storage::disk('public')->exists($carpetaBase)) {
-                Storage::disk('public')->makeDirectory($carpetaBase);
-            }
 
-            $manager = new ImageManager(new GdDriver());
             try {
-                $image = $manager->read($request->file('Nombre'))->toWebp(80);
-                $image->save($rutaCompleta);
-                $data['Nombre'] = $rutaRelativa;
+                $data['Nombre'] = $response['secure_url'] ?? null;
             } catch (Exception $e) {
                 return response()->json(['message' => 'Error al procesar la imagen', 'error' => $e->getMessage()], 500);
             }
