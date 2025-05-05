@@ -25,6 +25,10 @@ Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
 Route::post('/chatbot', [ChatbotController::class, 'sendMessage'])->name('chatbot.sendMessage');
 Route::get('/multimedia-tipo/{tipo}', [multimedia_controller::class, 'getMultimediaByType'])->name('multimedia.getByType');
+Route::get('/lastJobs',[jobsController::class,'lastTenJob']);
+Route::get('/testimonials', [testimonialsController::class, 'allTestimonials'])->name('testimonial.all');
+
+
 
 //Private Routes
 
@@ -50,7 +54,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/company/{id}/telefonos/{phoneId}', [companysController::class, 'deletePhone'])->name('company.deletePhone');
     Route::post('/company/{id}/status', [companysController::class, 'toggleCompanyStatus'])->name('company.status');
     Route::put('/company/{id}/credentials', [companysController::class, 'updateCredentials'])->name('company.updateCredentials');
-    //endpoint for jobs
+    //endpoint for jobs 
     Route::get('/jobs', [jobsController::class, 'AllJobs'])->name('job.all');
     Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
     Route::post('/job-create', [jobsController::class, 'createJob'])->name('job.create');
@@ -73,7 +77,6 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/resume/{id}', [resumeController::class, 'deleteResume'])->name('resume.delete');
     Route::get('/resume/{id}/configuracion', [resumeController::class, 'getResumeConfiguration'])->name('resume.configuration');
     //endpoint for testimonials
-    Route::get('/testimonials', [testimonialsController::class, 'getAllTestimonials'])->name('testimonial.all');
     Route::get('/testimonial/{id}', [testimonialsController::class, 'getTestimonial'])->name('testimonial.get');
     Route::post('/testimonial-create', [testimonialsController::class, 'createTestimonial'])->name('testimonial.create');
     Route::put('/testimonial/{id}', [testimonialsController::class, 'updateTestimonial'])->name('testimonial.update');
