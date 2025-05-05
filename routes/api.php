@@ -50,7 +50,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/company/{id}/telefonos/{phoneId}', [companysController::class, 'deletePhone'])->name('company.deletePhone');
     Route::post('/company/{id}/status', [companysController::class, 'toggleCompanyStatus'])->name('company.status');
     Route::put('/company/{id}/credentials', [companysController::class, 'updateCredentials'])->name('company.updateCredentials');
-    //endpoint for jobs
+    //endpoint for jobs 
     Route::get('/jobs', [jobsController::class, 'AllJobs'])->name('job.all');
     Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
     Route::post('/job-create', [jobsController::class, 'createJob'])->name('job.create');
