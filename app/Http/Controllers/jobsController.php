@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\DB;
 use Cloudinary\Api\Upload\UploadApi;
 class jobsController extends Controller
 {
+    public function lastTenJob(){
+        $job= Trabajo::with(['empresa','multimedia'])
+            ->orderBy('created_at','desc')
+            ->take(10)
+            ->get();
+        return response()->json([
+            'jobs'=> $job
+        ], 200);
+    }
     public function allJobs()
     {
         $imagenes = Multimedia::all();

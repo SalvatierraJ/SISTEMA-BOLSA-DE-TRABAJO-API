@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 class testimonialsController extends Controller
 {
     public function allTestimonials(){
-        $testimonials = Testimonio::all();
+        $testimonials = Testimonio::with(['usuario.multimedia'])
+                        ->get();
         return response()->json([
             'testimonials' => $testimonials
         ], 200);
