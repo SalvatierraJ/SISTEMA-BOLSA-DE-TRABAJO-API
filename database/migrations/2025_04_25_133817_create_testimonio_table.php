@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('testimonio', function (Blueprint $table) {
             $table->integer('Id_Testimonio', true);
+            $table->text('Titulo')->nullable();
             $table->text('Comentario')->nullable();
             $table->integer('Id_Usuario')->nullable()->index('id_usuario');
             $table->timestamps();

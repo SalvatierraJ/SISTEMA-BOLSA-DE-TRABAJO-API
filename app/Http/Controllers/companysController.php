@@ -50,7 +50,7 @@ class companysController extends Controller
             'Nombre'         => 'required|string|max:100',
             'Id_Sector'      => 'required|integer',
             'Correo'         => 'required|email|max:100|unique:usuario,Usuario',
-            'Descripcion'    => 'nullable|string|max:255',
+            'Descripcion'    => 'nullable|string',
             'Redes_Sociales' => 'nullable|string|max:256',
             'Direccion'      => 'nullable|string|max:255',
             'Contacto'       => 'nullable|string|max:100',
@@ -203,7 +203,7 @@ class companysController extends Controller
             'Contacto' => 'sometimes|nullable|string|max:100',
             'Direccion_Web' => 'sometimes|nullable|string|max:255',
             'Redes_Sociales' => 'sometimes|nullable|string|max:256',
-            'Descripcion' => 'sometimes|nullable|string|max:255',
+            'Descripcion' => 'sometimes|nullable|string|max:65535',
             'imagen' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
             'telefonos' => 'nullable|array',
             'telefonos.*' => 'sometimes|nullable|integer|digits_between:7,15'

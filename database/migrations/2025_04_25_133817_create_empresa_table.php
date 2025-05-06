@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('Id_Empresa', true);
             $table->text('Descripcion')->nullable();
             $table->string('Nombre')->nullable();
-            $table->string('Direccion')->nullable();
+            $table->text('Direccion')->nullable();
             $table->string('Direccion_Web')->nullable();
             $table->string('Correo')->nullable();
             $table->string('Redes_Sociales')->nullable();

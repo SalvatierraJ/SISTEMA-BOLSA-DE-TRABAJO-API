@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class RolController extends Controller
 {
-    public function index()
+    public function getAll()
     {
         $roles = Rol::all();
         return response()->json([
@@ -17,7 +17,7 @@ class RolController extends Controller
         ], 200);
     }
 
-    public function show($id)
+    public function getRollWith($id)
     {
         $rol = Rol::find($id);
         if (!$rol) {
@@ -30,7 +30,7 @@ class RolController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function createRole(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'Nombre' => 'required|string|max:100',
@@ -52,7 +52,7 @@ class RolController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function updateRole(Request $request, $id)
     {
         $rol = Rol::find($id);
         if (!$rol) {
@@ -81,7 +81,7 @@ class RolController extends Controller
         ], 200);
     }
 
-    public function destroy($id)
+    public function deleteRole($id)
     {
         $rol = Rol::find($id);
         if (!$rol) {
@@ -93,42 +93,6 @@ class RolController extends Controller
         $rol->delete();
         return response()->json([
             'message' => 'Rol eliminado exitosamente'
-        ], 200);
-    }
-
-    public function assignRolToUser(Request $request)
-    {
-        $validate = Validator::make($request->all(), [
-            'Id_Usuario' => 'required|integer|exists:usuario,Id_Usuario',
-            'Id_Rol' => 'required|integer|exists:rol,Id_Rol',
-        ]);
-    
-        if ($validate->fails()) {
-            return response()->json([
-                'errors' => $validate->errors()
-            ], 422);
-        }
-    
-        $usuario = Usuario::find($request->Id_Usuario);
-        if (!$usuario) {
-            return response()->json([
-                'message' => 'Usuario no encontrado'
-            ], 404);
-        }
-    
-        $rol = Rol::find($request->Id_Rol);
-        if (!$rol) {
-            return response()->json([
-                'message' => 'Rol no encontrado'
-            ], 404);
-        }
-    
-        $usuario->Id_Rol = $request->Id_Rol;
-        $usuario->save();
-    
-        return response()->json([
-            'message' => 'Rol asignado correctamente',
-            'usuario' => $usuario
         ], 200);
     }
 }

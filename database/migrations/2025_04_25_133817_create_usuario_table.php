@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,6 +20,9 @@ return new class extends Migration
             $table->integer('Id_Rol')->nullable()->index('id_rol');
             $table->timestamps();
         });
+        DB::table('carrera')->insert([
+            ['Usuario' => 'admin','Clave'=>bcrypt(12345678),'Estado'=>'Activo', 'created_at' => now(), 'updated_at' => now()],
+        ]);
     }
 
     /**

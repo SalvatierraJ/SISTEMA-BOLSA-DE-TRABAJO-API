@@ -123,12 +123,11 @@ Route::fallback(function () {
 });
 
 // Rutas para gestión de roles
-Route::get('/roles', [RolController::class, 'index']);
-Route::get('/roles/{id}', [RolController::class, 'show']);
-Route::post('/roles', [RolController::class, 'store']);
-Route::put('/roles/{id}', [RolController::class, 'update']);
-Route::delete('/roles/{id}', [RolController::class, 'destroy']);
-Route::post('/roles/assign', [RolController::class, 'assignRolToUser']);
+Route::get('/roles', [RolController::class, 'getAll']);
+Route::get('/roles/{id}', [RolController::class, 'getRollWith']);
+Route::post('/roles', [RolController::class, 'createRole']);
+Route::put('/roles/{id}', [RolController::class, 'updateRole']);
+Route::delete('/roles/{id}', [RolController::class, 'deleteRole']);
 
 // Rutas para Teléfono
 Route::get('/telefonos', [TelefonoController::class, 'index']);
