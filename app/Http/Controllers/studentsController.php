@@ -44,7 +44,7 @@ class studentsController extends Controller
 
         try {
             DB::beginTransaction();
-            $rolEstudiante = DB::table('rol')->where('Nombre', 'estudiante')->first();
+            $rolEstudiante = DB::table('rol')->where('Nombre', 'Estudiante')->first();
             if (!$rolEstudiante) {
                 throw new \Exception('El rol de estudiante no está configurado en el sistema');
             }

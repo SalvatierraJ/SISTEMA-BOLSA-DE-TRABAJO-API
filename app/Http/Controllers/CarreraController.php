@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CarreraController extends Controller
 {
-    public function index()
+    public function getAll()
     {
         $carreras = Carrera::all();
         return response()->json([
@@ -16,7 +16,7 @@ class CarreraController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function createCarrera(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'Nombre' => 'required|string|max:100|unique:carrera,Nombre',
@@ -40,7 +40,7 @@ class CarreraController extends Controller
         ], 201);
     }
 
-    public function show($id)
+    public function buscarCarreraPor($id)
     {
         $carrera = Carrera::find($id);
         if (!$carrera) {
@@ -53,7 +53,7 @@ class CarreraController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, $id)
+    public function actualizarCarrera(Request $request, $id)
     {
         $carrera = Carrera::find($id);
         if (!$carrera) {
@@ -81,7 +81,7 @@ class CarreraController extends Controller
         ], 200);
     }
 
-    public function destroy($id)
+    public function eliminarCarrera($id)
     {
         $carrera = Carrera::find($id);
         if (!$carrera) {

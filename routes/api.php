@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\sectorController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ChatbotController;
+use App\Models\Carrera;
 
 //Public Routes
 Route::post('/register', [authController::class, 'register'])->name('register');
@@ -54,7 +55,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/company/{id}/telefonos/{phoneId}', [companysController::class, 'deletePhone'])->name('company.deletePhone');
     Route::post('/company/{id}/status', [companysController::class, 'toggleCompanyStatus'])->name('company.status');
     Route::put('/company/{id}/credentials', [companysController::class, 'updateCredentials'])->name('company.updateCredentials');
-    //endpoint for jobs 
+    //endpoint for jobs
     Route::get('/jobs', [jobsController::class, 'AllJobs'])->name('job.all');
     Route::get('/job/{id}', [jobsController::class, 'getJob'])->name('job.get');
     Route::post('/job-create', [jobsController::class, 'createJob'])->name('job.create');
@@ -100,6 +101,14 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/sector/{id}', [sectorController::class, 'updateSector'])->name('sector.update');
     Route::delete('/sector/{id}', [sectorController::class, 'deleteSector'])->name('sector.delete');
 
+    //endpoint for carrera
+
+    Route::get('/carreras',[CarreraController::class,'getAll']);
+    Route::post('/carrera-create',[CarreraController::class,'createCarrera']);
+    Route::put('/carrera/{id}/edit',[CarreraController::class,'actualizarCarrera']);
+    Route::get('/buscarCarrera/{id}',[CarreraController::class,'buscarCarreraPor']);
+    Route::delete('/eliminar/{id}/carrera',[CarreraController::class,'eliminarCarrera']);
+
 });
 Route::get('/up', function () {
     return response()->json([
@@ -128,7 +137,3 @@ Route::post('/telefonos', [TelefonoController::class, 'store']);
 Route::put('/telefonos/{id}', [TelefonoController::class, 'update']);
 Route::delete('/telefonos/{id}', [TelefonoController::class, 'destroy']);
 
-// Ruta para Carrera
-Route::middleware(['auth:api'])->group(function () {
-    Route::apiResource('carreras', CarreraController::class);
-});
