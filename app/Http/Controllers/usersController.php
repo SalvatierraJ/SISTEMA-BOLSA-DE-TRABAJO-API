@@ -14,13 +14,16 @@ class usersController extends Controller
             'users' => $user
         ], 200);
     }
-    public function getUser($id){
-        $user= Usuario::find($id);
-        if(!$user){
+    public function getUser(Request $request)
+    {
+        $user = Usuario::with(['personas.estudiantes.carreras'])->where('Id_Usuario', $request->user()->Id_Usuario)->first();
+
+        if (!$user) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
+
         return response()->json([
             'user' => $user
         ], 200);
