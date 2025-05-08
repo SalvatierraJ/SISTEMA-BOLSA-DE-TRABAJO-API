@@ -16,8 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class jobsController extends Controller
 {
-    public function lastTenJob()
-    {
+    public function lastTenJob(){
         $job = Trabajo::with(['empresa', 'multimedia'])
             ->orderBy('created_at', 'desc')
             ->take(10)
@@ -26,8 +25,7 @@ class jobsController extends Controller
             'jobs' => $job
         ], 200);
     }
-    public function allJobs()
-    {
+    public function allJobs(){
         $job = Trabajo::all();
         $trabajos = [];
 
@@ -50,10 +48,7 @@ class jobsController extends Controller
             'jobs' => $trabajos
         ], 200);
     }
-
-    public function createJob(Request $request)
-    {
-
+    public function createJob(Request $request){
         $validate = Validator::make($request->all(), [
             'Titulo' => 'required|string|max:100',
             'Descripcion' => 'required|string|max:1000',
@@ -68,7 +63,7 @@ class jobsController extends Controller
             'Estado' => 'required|string|in:Activo,Inactivo',
             'Tipo_Trabajo' => 'required|integer',
             'Id_Empresa' => 'required|integer|exists:empresa,Id_Empresa',
-            'imagenes' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:5124',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -78,7 +73,6 @@ class jobsController extends Controller
 
         try {
             DB::beginTransaction();
-
             $job = Trabajo::create([
                 'Titulo' => $request->Titulo,
                 'Descripcion' => $request->Descripcion,
@@ -92,25 +86,29 @@ class jobsController extends Controller
                 'Duracion' => $request->Duracion,
                 'Estado' => $request->Estado,
                 'Tipo_Trabajo' => $request->Tipo_Trabajo,
-                'Id_Empresa' => $request->Id_Empresa
+                'Id_Empresa' => $request->Id_Empresa,
             ]);
 
-            $archivosGuardados = [];
-            if ($request->hasFile('imagenes')) {
-                foreach ($request->file('imagenes') as $imagen) {
-                    $response = (new UploadApi())->upload($imagen->getRealPath(), [
+            if ($request->hasFile('imagen')) {
+                try {
+                    $imagen = $request->file('imagen'); 
+                    $response = (new UploadApi())->upload($request->file('imagen')->getRealPath(), [
                         'folder' => 'trabajos_utepsa',
-                        'resource_type' => 'image'
+                        'resource_type' => 'image',
                     ]);
 
                     Multimedia::create([
+                        'Id_Trabajo' => $job->Id_Trabajo, 
                         'Nombre' => $response['secure_url'],
-                        'Tipo' => 'image',
-                        'Id_Trabajo' => $job->Id_Trabajo,
-                        'public_id' => $response['public_id']
+                        'Tipo' => 'trabajo',
+                        'Estado' => 'Activo',       
                     ]);
-
-                    $archivosGuardados[] = $response['secure_url'];
+                }catch(error $e){
+                    DB::rollback();
+                    return response()->json([
+                        'message' => 'Error al subir la imagen a Cloudinary',
+                        'error' => $e->getMessage()
+                    ], 500);
                 }
             }
 
@@ -118,55 +116,17 @@ class jobsController extends Controller
 
             return response()->json([
                 'message' => 'Trabajo creado exitosamente',
-                'job' => $job,
-                'imagenes' => $archivosGuardados
+                'job' => $job
             ], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'message' => 'Error al crear el trabajo',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
-    public function uploadImageJob(Request $request, $id)
-    {
-        $trabajo = Trabajo::findOrFail($id);
-        if (!$trabajo) {
-            return response()->json([
-                'mensaje' => 'Trabajo no encontrado'
-            ], 404);
-        }
-        $request->validate([
-            'imagenes' => 'required|array',
-            'imagenes.*' => 'image|mimes:jpeg,png,jpg|max:2048'
-        ]);
-
-        $archivosGuardados = [];
-        $manager = ImageManager::withDriver(new GdDriver());
-
-        foreach ($request->file('imagenes') as $imagen) {
-            $nombre = Str::random(10) . '.webp';
-            $ruta = storage_path('app/public/imagenes/' . $nombre);
-
-            $image = $manager->read($imagen);
-            $image->toWebp()->save($ruta);
-
-            $archivosGuardados[] = $nombre;
-        }
-
-        $trabajo->Nombre_Imagen = $archivosGuardados;
-        $trabajo->save();
-
-        return response()->json([
-            'mensaje' => 'Imágenes subidas correctamente',
-            'archivos' => $archivosGuardados
-        ], 200);
-    }
-
-
-    public function deleteImageJob(Request $request, $id)
-    {
+    public function deleteImageJob(Request $request, $id){
         $job = Trabajo::with('multimedia')->find($id);
 
         if (!$job) {
@@ -199,8 +159,7 @@ class jobsController extends Controller
             ], 500);
         }
     }
-    public function getjob($id)
-    {
+    public function getjob($id){
         $job = Trabajo::with(['empresa', 'multimedia'])
             ->where('Id_Trabajo', $id)
             ->orWhere('Id_Empresa', $id)
@@ -214,8 +173,7 @@ class jobsController extends Controller
             'job' => $job
         ], 200);
     }
-    public function updateJob(Request $request, $id)
-    {
+    public function updateJob(Request $request, $id){
         $job = Trabajo::with(['multimedia'])->find($id);
 
         if (!$job) {
@@ -223,7 +181,7 @@ class jobsController extends Controller
                 'mensaje' => 'Trabajo no encontrado'
             ], 404);
         }
-        $validate = Validator::make($request->all(), [
+        $rules = [
             'Titulo' => 'sometimes|string|max:100',
             'Descripcion' => 'sometimes|string|max:1000',
             'Requisitos' => 'sometimes|string',
@@ -237,71 +195,102 @@ class jobsController extends Controller
             'Estado' => 'sometimes|string|in:Activo,Inactivo',
             'Tipo_Trabajo' => 'sometimes|integer',
             'Id_Empresa' => 'sometimes|integer|exists:empresa,Id_Empresa',
-            'imagenes' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ];
+    if ($request->hasFile('imagen')) {
+            $rules['imagen'] = 'image|mimes:jpeg,png,jpg|max:5124';
+        }
+
+        $validate = Validator::make($request->all(), $rules);
 
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
+
         DB::beginTransaction();
 
+        try {
+            $job->update($request->only([
+                'Titulo',
+                'Descripcion',
+                'Requisitos',
+                'Competencia',
+                'Ubicacion',
+                'Salario',
+                'Modalidad',
+                'Fecha_Inicio',
+                'Fecha_Fin',
+                'Duracion',
+                'Estado',
+                'Tipo_Trabajo',
+                'Id_Empresa'
+            ]));
 
+            if ($request->hasFile('imagen')) {
+                $imagen = $request->file('imagen');
 
-        $job->update($request->only([
-            'Titulo',
-            'Descripcion',
-            'Requisitos',
-            'Competencia',
-            'Ubicacion',
-            'Salario',
-            'Modalidad',
-            'Fecha_Inicio',
-            'Fecha_Fin',
-            'Duracion',
-            'Estado',
-            'Tipo_Trabajo',
-            'Id_Empresa'
+                try {
+                    $response = (new UploadApi())->upload($imagen->getRealPath(), [
+                        'folder' => 'trabajos_utepsa',
+                        'resource_type' => 'image'
+                    ]);
 
-        ]));
-        if ($request->hasFile('imagenes')) {
-            // Eliminar imágenes anteriores si existe
-            if ($job->multimedia->isNotEmpty()) {
-                foreach ($job->multimedia as $media) {
-                    $this->eliminarDeCloudinary($media->Nombre);
-                    $media->delete();
+                    $multimedia = $job->multimedia()->first();
+
+                    if ($multimedia) {
+                        $this->eliminarDeCloudinary($multimedia->Nombre);
+                        $multimedia->update(['Nombre' => $response['secure_url']]);
+                    } else {
+                        Multimedia::create([
+                            'Id_Trabajo' => $job->Id_Trabajo,
+                            'Tipo' => 'trabajo',
+                            'Nombre' => $response['secure_url']
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    DB::rollback();
+                    return response()->json([
+                        'message' => 'Error al subir la imagen a Cloudinary',
+                        'error' => $e->getMessage()
+                    ], 500);
                 }
             }
 
-            $imagen = $request->file('imagenes');
+            DB::commit();
 
-            try {
-                $response = (new UploadApi())->upload($imagen->getRealPath(), [
-                    'folder' => 'trabajos_utepsa',
-                    'resource_type' => 'image'
-                ]);
+            $job->load('multimedia');
 
-                // Guardar el nuevo registro en la tabla Multimedia
-                Multimedia::create([
-                    'Id_Trabajo' => $job->Id_Trabajo,
-                    'Tipo' => 'imagen',
-                    'Nombre' => $response['secure_url']
-                ]);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'message' => 'Error al subir la imagen a Cloudinary',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
+            return response()->json([
+                'job' => $job
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'mensaje' => 'Error al actualizar el trabajo',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        DB::commit();
+    }
+    public function uploadImageJob(Request $request, $id){
+        $trabajo = Trabajo::with(['multimedia'])->findOrFail($id);
+        if (!$trabajo) {
+            return response()->json([
+                'mensaje' => 'Trabajo no encontrado'
+            ], 404);
+        }
+        
+        $request->validate([
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
         return response()->json([
-            'job' => $job
+            'mensaje' => 'Imágenes subidas correctamente',
+            #'archivos' => 
         ], 200);
     }
-    public function getjobsByType($type)
-    {
+    public function getjobsByType($type){
         $job = Trabajo::with(['empresa', 'multimedia'])
             ->where('Tipo_Trabajo', $type)
             ->get();
@@ -309,8 +298,7 @@ class jobsController extends Controller
             'job' => $job
         ], 200);
     }
-    public function deleteJob($id)
-    {
+    public function deleteJob($id){
         Multimedia::where('Id_Trabajo', $id)->delete();
 
         $job = Trabajo::find($id);
@@ -324,8 +312,7 @@ class jobsController extends Controller
             'mensaje' => 'Trabajo eliminado correctamente'
         ], 200);
     }
-    public function getJobsByCompany($id)
-    {
+    public function getJobsByCompany($id){
         $jobs = Trabajo::where('Id_Empresa', $id)->get();
         if ($jobs->isEmpty()) {
             return response()->json([
@@ -336,27 +323,12 @@ class jobsController extends Controller
             'jobs' => $jobs
         ], 200);
     }
-
-    private function eliminarDeCloudinary($url)
-    {
-        if (!$url) return;
-
-        $parsed = parse_url($url);
-        $path = $parsed['path'] ?? null;
-
-        if ($path) {
-            $segments = explode('/', ltrim($path, '/'));
-            $publicIdWithExt = array_pop($segments);
-            $publicId = pathinfo($publicIdWithExt, PATHINFO_FILENAME);
-            $folder = implode('/', $segments);
-
-            $fullPublicId = $folder . '/' . $publicId;
-
-            $resourceType = (str_contains($url, '/video/')) ? 'video' : 'image';
-
-            (new UploadApi())->destroy($fullPublicId, [
-                'resource_type' => $resourceType
-            ]);
+    private function eliminarDeCloudinary($publicId){
+        $uploadApi = new UploadApi();
+        try {
+            $uploadApi->destroy($publicId);
+        } catch (\Exception $e) {
+            Log::error("Error al eliminar de Cloudinary: " . $e->getMessage());
         }
     }
 }
