@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Curriculum;
 use App\Models\Estudiante;
 use App\Models\Persona;
 use App\Models\Telefono;
 use App\Models\Usuario;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -287,5 +289,13 @@ class studentsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function saveCurriculum(Request $request){
+        $user = Auth::user()->load(['personas.estudiantes']);
+        Curriculum::create([
+            'Configuracion_CV'=> $request->settings,
+            'Id_Estudiante' => $user->estudiante->Id_Estudiante
+        ]);
     }
 }
