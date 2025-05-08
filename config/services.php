@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'perspective' => [
+        'key' => env('PERSPECTIVE_API_KEY'),
+    ],
 
 ];

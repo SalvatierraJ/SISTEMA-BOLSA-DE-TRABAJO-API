@@ -15,6 +15,7 @@ return new class extends Migration
             $table->integer('Id_Testimonio', true);
             $table->text('Titulo')->nullable();
             $table->text('Comentario')->nullable();
+            $table->enum('Estado', ['Activo', 'Inactivo'])->nullable()->default('Inactivo');
             $table->integer('Id_Usuario')->nullable()->index('id_usuario');
             $table->timestamps();
         });

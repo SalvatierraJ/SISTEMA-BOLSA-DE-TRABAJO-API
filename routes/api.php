@@ -28,7 +28,7 @@ Route::post('/chatbot', [ChatbotController::class, 'sendMessage'])->name('chatbo
 Route::get('/multimedia-tipo/{tipo}', [multimedia_controller::class, 'getMultimediaByType'])->name('multimedia.getByType');
 Route::get('/lastJobs',[jobsController::class,'lastTenJob']);
 Route::get('/testimonials', [testimonialsController::class, 'allTestimonials'])->name('testimonial.all');
-
+Route::post('/moderar-testimonio', [testimonialsController::class, 'analizarComentario']);
 
 
 //Private Routes
@@ -43,6 +43,10 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/user/{id}', [usersController::class, 'updateUser'])->name('user.update');
     Route::delete('/user/{id}', [usersController::class, 'deleteUser'])->name('user.delete');
     Route::post('/user/register', [authController::class, 'register'])->name('user.register');
+    Route::post('/userAdmin/{id}/status',[usersController::class,'toggleAdministratorStatus']);
+    Route::put('/userAdmin/{id}/update',[usersController::class,'updateUserAdministrator']);
+    Route::post('/userAdmin',[usersController::class,'createUserAdministrator']);
+    Route::put('/user-credential-admin/{id}',[usersController::class,'updateAdministratorCredentials']);
     //endpoint for company
     Route::get('/companies', [companysController::class, 'getAlllComapanys'])->name('company.all');
     Route::get('/company/{id}', [companysController::class, 'getCompany'])->name('company.get');
@@ -82,6 +86,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::post('/testimonial-create', [testimonialsController::class, 'createTestimonial'])->name('testimonial.create');
     Route::put('/testimonial/{id}', [testimonialsController::class, 'updateTestimonial'])->name('testimonial.update');
     Route::delete('/testimonial/{id}', [testimonialsController::class, 'deleteTestimonial'])->name('testimonial.delete');
+    Route::post('/testimonial/{id}/state',[testimonialsController::class,'toggleEstado']);
     //endpoint for Students
     Route::get('/students', [studentsController::class, 'allStudents'])->name('student.all');
     Route::get('/student/{id}', [studentsController::class, 'getStudent'])->name('student.get');

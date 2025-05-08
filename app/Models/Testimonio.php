@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Testimonio
- * 
+ *
  * @property int $Id_Testimonio
  * @property string|null $Comentario
  * @property int|null $Id_Usuario
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Usuario|null $usuario
  *
  * @package App\Models
@@ -33,7 +33,9 @@ class Testimonio extends Model
 
 	protected $fillable = [
 		'Comentario',
-		'Id_Usuario'
+		'Id_Usuario',
+        'Estado',
+        'Titulo'
 	];
 
 	public function usuario()
