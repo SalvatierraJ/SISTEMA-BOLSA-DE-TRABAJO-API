@@ -7,7 +7,7 @@ use App\Models\Estudiante;
 use App\Models\Persona;
 use App\Models\Telefono;
 use App\Models\Usuario;
-use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -291,11 +291,42 @@ class studentsController extends Controller
         }
     }
 
-    public function saveCurriculum(Request $request){
-        $user = Auth::user()->load(['personas.estudiantes']);
-        Curriculum::create([
-            'Configuracion_CV'=> $request->settings,
-            'Id_Estudiante' => $user->estudiante->Id_Estudiante
+    public function saveCurriculum(Request $request)
+    {
+        $user = Auth::user()->load(['rol', 'personas.estudiantes.carreras', 'personas.telefonos', 'testimonios']);
+
+        $persona = $user->personas->first();
+        $estudiante = $persona?->estudiantes->first();
+
+        if (!$persona || !$estudiante) {
+            return response()->json(['error' => 'No se encontró persona o estudiante'], 404);
+        }
+
+        $curriculum = Curriculum::create([
+            'Configuracion_CV' => $request->formSettings,
+            'Id_Estudiante' => $estudiante->Id_Estudiante
+        ]);
+
+        return response()->json([
+            'message' => 'Currículum guardado correctamente',
+            'curriculum' => $curriculum
         ]);
     }
+    public function getCurriculumEstudiante()
+    {
+        $user = Auth::user()->load(['rol', 'personas.estudiantes.carreras', 'personas.telefonos', 'testimonios']);
+
+        $persona = $user->personas->first();
+        $estudiante = $persona?->estudiantes->first();
+        if (!$persona || !$estudiante) {
+            return response()->json(['error' => 'No se encontró persona o estudiante'], 404);
+        }
+
+        $curriculum = Curriculum::where('Id_Estudiante', $estudiante->Id_Estudiante)->first();
+
+        return response()->json([
+            'formSettings' => $curriculum->Configuracion_CV
+        ], 200);
+    }
+
 }

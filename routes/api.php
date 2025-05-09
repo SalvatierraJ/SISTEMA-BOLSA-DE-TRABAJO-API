@@ -95,6 +95,7 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::delete('/student/{id}', [studentsController::class, 'deleteStudent'])->name('student.delete');
     Route::put('/student/{id}/user', [studentsController::class, 'updateStudentCredentials'])->name('student.updateUser');
     Route::post('/student/Cv',[studentsController::class,'saveCurriculum']);
+    Route::get('/estudiante/Curriculum',[studentsController::class,'getCurriculumEstudiante']);
     //endpoint for multimedia
     Route::get( '/multimedia/{id}', [multimedia_controller::class, 'getMultimedia'])->name('multimedia.get');
     Route::post('/multimedia-create', [multimedia_controller::class, 'createMultimedia'])->name('multimedia.create');
