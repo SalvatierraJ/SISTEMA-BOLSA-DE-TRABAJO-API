@@ -97,7 +97,6 @@ class studentsController extends Controller
                 'usuario' => $usuario,
                 'telefonos' => $telefonos
             ], 201);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -131,15 +130,15 @@ class studentsController extends Controller
         }
 
         $validate = Validator::make($request->all(), [
-            'Nro_Registro' => 'required|string|unique:estudiante,Nro_Registro,'.$id.',Id_Estudiante',
-            'CI' => 'required|integer|unique:persona,CI,'.$estudiante->persona->Id_Persona.',Id_Persona',
+            'Nro_Registro' => 'required|string|unique:estudiante,Nro_Registro,' . $id . ',Id_Estudiante',
+            'CI' => 'required|integer|unique:persona,CI,' . $estudiante->persona->Id_Persona . ',Id_Persona',
             'Nombre' => 'required|string|max:100',
             'Apellido1' => 'required|string|max:100',
             'Apellido2' => 'nullable|string|max:100',
             'Genero' => 'nullable|boolean',
             'telefonos' => 'required|array|min:1',
             'telefonos.*' => 'required|integer|digits_between:7,15',
-            'Correo' => 'required|email|max:100|unique:persona,Correo,'.$estudiante->persona->Id_Persona.',Id_Persona',
+            'Correo' => 'required|email|max:100|unique:persona,Correo,' . $estudiante->persona->Id_Persona . ',Id_Persona',
             'Id_Carrera' => 'required|integer|exists:carrera,Id_Carrera'
         ]);
 
@@ -195,7 +194,6 @@ class studentsController extends Controller
                 'usuario' => $persona->usuario,
                 'telefonos' => $telefonos
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -237,7 +235,6 @@ class studentsController extends Controller
             return response()->json([
                 'message' => 'Estudiante eliminado exitosamente'
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -281,7 +278,6 @@ class studentsController extends Controller
                 'message' => 'Credenciales del estudiante actualizadas exitosamente',
                 'usuario' => $usuario
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -302,10 +298,16 @@ class studentsController extends Controller
             return response()->json(['error' => 'No se encontró persona o estudiante'], 404);
         }
 
-        $curriculum = Curriculum::create([
-            'Configuracion_CV' => $request->formSettings,
-            'Id_Estudiante' => $estudiante->Id_Estudiante
-        ]);
+        if (Curriculum::where('Id_Estudiante', $estudiante->Id_Estudiante)->exists()) {
+            $curriculum = Curriculum::update([
+                'Configuracion_CV' => $request->formSettings
+            ]);
+        } else {
+            $curriculum = Curriculum::create([
+                'Configuracion_CV' => $request->formSettings,
+                'Id_Estudiante' => $estudiante->Id_Estudiante
+            ]);
+        }
 
         return response()->json([
             'message' => 'Currículum guardado correctamente',
@@ -328,5 +330,4 @@ class studentsController extends Controller
             'formSettings' => $curriculum->Configuracion_CV
         ], 200);
     }
-
 }

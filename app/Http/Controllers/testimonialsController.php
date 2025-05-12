@@ -12,7 +12,7 @@ class testimonialsController extends Controller
 {
     public function allTestimonials()
     {
-        $testimonials = Testimonio::with(['usuario.multimedia'])
+        $testimonials = Testimonio::with(['usuario.multimedia','usuario.personas.estudiantes.carreras'])
             ->get();
         return response()->json([
             'testimonials' => $testimonials
