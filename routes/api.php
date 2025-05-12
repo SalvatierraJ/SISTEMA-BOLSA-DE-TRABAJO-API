@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\sectorController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\PostulacionesController;
 use App\Models\Carrera;
 
 //Public Routes
@@ -116,6 +117,12 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::get('/buscarCarrera/{id}',[CarreraController::class,'buscarCarreraPor']);
     Route::delete('/eliminar/{id}/carrera',[CarreraController::class,'eliminarCarrera']);
 
+
+    //endpoint for postulaciones
+    Route::get('/postulaciones',[PostulacionesController::class,'getPostulaciones']);
+    Route::post('/postular',[PostulacionesController::class,'postular']);
+    Route::get('/curriculum',[PostulacionesController::class,'getCurriculumPDF']);
+    Route::post('/upload-curriculum',[PostulacionesController::class,'uploadCurriculum']);
 });
 Route::get('/up', function () {
     return response()->json([
