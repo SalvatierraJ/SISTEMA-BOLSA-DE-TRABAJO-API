@@ -70,7 +70,7 @@ class authController extends Controller
 
     public function getUser()
     {
-        $user = Auth::user()->load(['rol' , 'personas.estudiantes.carreras' , 'personas.telefonos','testimonios']);
+        $user = Auth::user()->load(['rol' , 'personas.estudiantes.carreras' , 'personas.telefonos','testimonios', 'multimedia']);
         return response()->json(compact('user'));
     }
 

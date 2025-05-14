@@ -48,6 +48,8 @@ Route::middleware([CorsMiddleware::class,IsUserAuth::class])->group(function () 
     Route::put('/userAdmin/{id}/update',[usersController::class,'updateUserAdministrator']);
     Route::post('/userAdmin',[usersController::class,'createUserAdministrator']);
     Route::put('/user-credential-admin/{id}',[usersController::class,'updateAdministratorCredentials']);
+    //endpoint for user Image
+    Route::post('/userImageUpdate', [usersController::class, 'uploadImage'])->name('user.updateImage');
     //endpoint for company
     Route::get('/companies', [companysController::class, 'getAlllComapanys'])->name('company.all');
     Route::get('/company/{id}', [companysController::class, 'getCompany'])->name('company.get');
@@ -149,4 +151,3 @@ Route::get('/telefonos/{id}', [TelefonoController::class, 'show']);
 Route::post('/telefonos', [TelefonoController::class, 'store']);
 Route::put('/telefonos/{id}', [TelefonoController::class, 'update']);
 Route::delete('/telefonos/{id}', [TelefonoController::class, 'destroy']);
-

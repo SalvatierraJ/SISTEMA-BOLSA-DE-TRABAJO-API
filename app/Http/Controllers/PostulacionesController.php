@@ -17,8 +17,10 @@ class PostulacionesController extends Controller
 {
     public function getPostulaciones()
     {
-        $user = Auth::user()->load(['rol', 'personas.estudiantes']);
-        $postulaciones = Postulacion::where('Id_Estudiante', $user->personas[0]->estudiantes[0]->Id_Estudiante)->get();
+        $user = Auth::user()->load(['rol', 'personas.estudiantes',]);
+        $Estudiante = $user->personas[0]->estudiantes[0]->Id_Estudiante;
+        $postulaciones = Postulacion::where('Id_Estudiante',$Estudiante)->get();
+        $postulaciones -> load(['trabajo', 'trabajo.empresa']);
         return response()->json(['postulaciones' => $postulaciones, 'message' => 'Postulaciones obtenidas con éxito']);
     }
 

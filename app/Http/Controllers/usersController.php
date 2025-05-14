@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Persona;
 use App\Models\Telefono;
 use App\Models\Usuario;
+use App\Models\Multimedia;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Cloudinary\Api\Upload\UploadApi;
 
 class usersController extends Controller
 {
@@ -262,7 +265,7 @@ class usersController extends Controller
 
     public function getUser(Request $request)
     {
-        $user = Usuario::with(['personas.estudiantes.carreras'])->where('Id_Usuario', $request->user()->Id_Usuario)->first();
+        $user = Usuario::with(['personas.estudiantes.carreras','multimedia'])->where('Id_Usuario', $request->user()->Id_Usuario)->first();
 
         if (!$user) {
             return response()->json([
@@ -310,5 +313,57 @@ class usersController extends Controller
         return response()->json([
             'message' => 'User deleted successfully'
         ], 200);
+    }
+    public function uploadImage(Request $request){
+        $user = Auth::user();
+        $validate = Validator::make($request->all(), [
+            'Imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'Tipo' => 'required|string|in:Perfil,Banner' // Asegúrate de que Tipo solo sea 'Perfil' o 'Banner'
+        ]);
+        if ($validate->fails()) {
+            return response()->json(['errors' => $validate->errors()], 422);
+        }
+        if($request->hasFile('Imagen')){
+            try{
+                $file = $request->file('Imagen');
+                $response = (new UploadApi())->upload($file->getRealPath(), [
+                    'folder' => 'Utepsa_Estudiantes',
+                    'resource_type' => 'image',
+                ]);
+                $imagePath = $response['secure_url'];
+                $tipo = $request->input('Tipo');
+    
+                $Multimedia = Multimedia::where('Id_Usuario', $user->Id_Usuario)->where('Tipo', $tipo)->first();
+    
+                if($Multimedia){
+                    // Actualizar la entrada existente
+                    $this->eliminarDeCloudinary($Multimedia->Nombre); // Eliminar la imagen anterior de Cloudinary
+                    $Multimedia->update(['Nombre' => $imagePath]);
+                    $message = 'Imagen actualizada exitosamente';
+                }else{
+                    // Crear una nueva entrada
+                    $Multimedia = Multimedia::create([
+                        'Nombre' => $imagePath,
+                        'Id_Usuario' => $user->Id_Usuario,
+                        'Tipo' => $tipo,
+                    ]);
+                    $message = 'Imagen subida exitosamente';
+                }
+                return response()->json(['message' => $message, 'multimedia' => $Multimedia], 200);
+            }catch(\Exception $e){
+                return response()->json(['message' => 'Error al subir la imagen', 'error' => $e->getMessage()], 500);
+            }
+        }
+    }
+    private function eliminarDeCloudinary($publicId){
+        $uploadApi = new UploadApi();
+        try {
+            $uploadApi->destroy($publicId);
+            return response()->json([
+                'message' => 'Imagen eliminada de Cloudinary'
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error("Error al eliminar de Cloudinary: " . $e->getMessage());
+        }
     }
 }
