@@ -3,6 +3,7 @@
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\applicationsController;
 use App\Http\Controllers\authController;
+use App\Http\Controllers\AuthSocialController;
 use App\Http\Controllers\companysController;
 use App\Http\Controllers\jobsController;
 use App\Http\Controllers\resumeController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\PostulacionesController;
 use App\Models\Carrera;
 
 //Public Routes
+Route::post('/auth/social-login', [AuthSocialController::class, 'socialLogin']);
 Route::post('/register', [authController::class, 'register'])->name('register');
 Route::post('/login', [authController::class, 'login'])->name('login');
 Route::post('/chatbot', [ChatbotController::class, 'sendMessage'])->name('chatbot.sendMessage');

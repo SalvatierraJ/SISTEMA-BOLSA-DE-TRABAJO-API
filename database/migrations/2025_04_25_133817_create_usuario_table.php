@@ -20,8 +20,13 @@ return new class extends Migration
             $table->integer('Id_Rol')->nullable()->index('id_rol');
             $table->timestamps();
         });
-        DB::table('carrera')->insert([
-            ['Usuario' => 'admin','Clave'=>bcrypt(12345678),'Estado'=>'Activo', 'created_at' => now(), 'updated_at' => now()],
+        DB::table('usuario')->insert([
+            'Usuario' => 'admin@bolsadeempleo.com',
+            'Clave' => bcrypt('admin123'),
+            'Estado' => 'Activo',
+            'Id_Rol' => 1,
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
     }
 
