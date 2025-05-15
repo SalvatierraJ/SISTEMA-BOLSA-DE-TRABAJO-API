@@ -1,0 +1,13 @@
+{
+    "type": "service_account",
+    "project_id": "bolsatrabajoutepsa-ljhu",
+    "private_key_id": "aa944c58d38fa9f16a8f3873951b9ce7351dd5d1",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCYqEMYZT82C+zN\nexz2UWjdBlsAreYH6WPG5YcEbIsVdvW1alIKU9toCW7Fk1v/RqJpAItoy+QvMYQp\nHu501bnSBwpsscvksPe9UGvuBaTi//V4e5vA0eFWArlgYl6mTi4B+v4UyQTOFVVN\ncLa7JlZcGpM2LKn0ocQIQNXn1NmrMenSuuNQRrTJUPymCOn/HPjuQQ8XK+BxCBl7\nJdTLWCgKVOvsqjBK4W1EZRFjgwDNgfqDlWPaoHeaO9EzLgaIRHA4bhsLhcxy/iaR\nDLBUwlP6UkRrPORxc0KQ9QWPibCfENmMJtquiOuIYSsySfVPvUtd7+kMGcr6MHT2\n7Qd6C7A5AgMBAAECggEARmY6YvK2HueK8gvXhGRwtpUqvHp1vapNADlzdX/U+DYf\nA+WfJfIcGbNX6TeW0nexiDjfEZoNhhIQv6HrF+hERG5IyW2I+NL/vMdsrpzduG2P\nt1tRra9cenzRHnje61TcdL9aEx3M4HkIGKllK5N3egwrXW1lh1Jeg+vaeYo4Q3EP\njeSw2kyfMTvKSZaxW8EjKmkpPSqj+WgRx3VjvXWg21li+BQxvwAB3PMDYTnrLbzP\nlqQJOTMYmVOEZdcEkomtiEJkZdP3lRIEc/v7WiGP2X6HChCrzLI+yat4VJzeZFFK\nQhuo9A36p7EpPf6Ccmvqa7gMreMEr/XurMErkyV7zQKBgQDSvrKSYmHoso+KC09S\nkNPdnnT+hHrLUlZRTdYDove+eW5MAs047VQZXR88EhJ6H2g2SK1ZZDGRjLKA3S1L\nKcQ6DAryV7z1BLd/ic1sSWwPWvijQap0+bHiEDj1y7l+N3mN+RYCBbutz8rEhFOx\nigsrGuzgA/WyCBwC7egWDFMZpwKBgQC5cE5+y+GVMZKv0zSfxTRN27U7SUwHoE7F\nLIxLNWR3jQCgQcJAkJI5i0Kcm2Ij1XITam/UnU86yXEs88KOT39oBaT+XZHstUCq\n/g/C2ELp1iifudMqyXOj6SnjbiaWDpZISNuKsSmc6fInF1XiDNgGF2cEIu9zALYf\nW80yYHBjHwKBgApU+RI+KoirAGiHJ2tn2Es8MoYr3o1LSxoPU9e3zKeU8nhdhsws\nrnvT2e0rAablFUncBEumott8519z+H1/3bPu1TaOYKAujAR/sAeIDfkuv5PZa07y\n0uq/WtuKEl0CwT3ZoV+WAl6CGnHJ/wRsPSHu3wAYkZoZ1a27Fi7GiehvAoGBAKcs\nkfdJQkLIAB+2XjizBeYy7f1WpM4zPRAQiyG6LqqAWVIgNkkSjGCIJTMd+amoYUET\nsWGRt72doQQPdRPqo0dZ31bZcBZfiL8eb4MOh7RbNyBX3AE0v6XDK9o2kV6yI9Vi\nqVktQgCN/5oyNWCmh5FmQ569B/U7bPR0RFboDimtAoGAYp44Gl8bF7SFU7wzA6wa\n/7WL22z/7VTTkfALoOlxgUnuzvZZZI+OgJzX+2edt+n4BU0Ak4OjZLJ6mJrEkc81\nrNgfA1ZRYdAbVtCwFgXMi7uUZn22EVXpc4257M1y7PLylk5S6i+XhPLBiAU8vfoo\nj3cFPM+DBLj/9AUYL5MEukQ=\n-----END PRIVATE KEY-----\n",
+    "client_email": "service-account@bolsatrabajoutepsa-ljhu.iam.gserviceaccount.com",
+    "client_id": "101416191020944085780",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/service-account%40bolsatrabajoutepsa-ljhu.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}
