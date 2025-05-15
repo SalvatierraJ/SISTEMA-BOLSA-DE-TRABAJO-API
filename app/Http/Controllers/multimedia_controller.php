@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\multimedia;
+use App\Models\Multimedia;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
