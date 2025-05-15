@@ -5,6 +5,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+!/storage/app/dialogflow/credenciales.json
 /vendor
 .env
 .env.backup
