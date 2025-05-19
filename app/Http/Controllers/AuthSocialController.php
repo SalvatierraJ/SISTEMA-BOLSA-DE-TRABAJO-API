@@ -11,8 +11,44 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Exception;
 
+/**
+ * @OA\Tag(
+ *     name="Autenticación Social",
+ *     description="Endpoints para autenticación con proveedores sociales"
+ * )
+ */
 class AuthSocialController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/auth/social",
+     *     summary="Autenticación con proveedor social",
+     *     tags={"Autenticación Social"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"token"},
+     *             @OA\Property(property="token", type="string", example="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Autenticación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Token no enviado o inválido"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error en el servidor"
+     *     )
+     * )
+     */
     public function socialLogin(Request $request)
     {
         $token = $request->input('token');

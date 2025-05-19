@@ -1,0 +1,3683 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Bolsa de Trabajo",
+        "description": "Documentación de la API desarrollada en Laravel para la bolsa de trabajo.",
+        "contact": {
+            "name": "Soporte",
+            "email": "soporte@tuapp.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Servidor Laravel local"
+        }
+    ],
+    "paths": {
+        "/api/auth/social": {
+            "post": {
+                "tags": [
+                    "Autenticación Social"
+                ],
+                "summary": "Autenticación con proveedor social",
+                "operationId": "b439ea4d728ee333ee80e0519286c939",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Autenticación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token no enviado o inválido"
+                    },
+                    "500": {
+                        "description": "Error en el servidor"
+                    }
+                }
+            }
+        },
+        "/api/carreras": {
+            "get": {
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Obtener todas las carreras",
+                "operationId": "fd954567d57cbbd64e87fa9a4440ff86",
+                "responses": {
+                    "200": {
+                        "description": "Lista de carreras",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "carreras": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Crear una nueva carrera",
+                "operationId": "3b6ce654ad50786d48bd8c3ecd3c0a44",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Ingeniería Informática"
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Carrera enfocada en el desarrollo de software"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Carrera creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Carrera creada exitosamente"
+                                        },
+                                        "carrera": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/carreras/{id}": {
+            "get": {
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Obtener una carrera específica",
+                "operationId": "dfb36a3854f1b3b58fa400f4bbbf314c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la carrera",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Carrera encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "carrera": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Carrera no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Actualizar una carrera existente",
+                "operationId": "7af6064a19a35024b3126a7f9194ad03",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la carrera",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Ingeniería Informática"
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Carrera enfocada en el desarrollo de software"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Carrera actualizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Carrera actualizada exitosamente"
+                                        },
+                                        "carrera": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Carrera no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/chatbot/message": {
+            "post": {
+                "tags": [
+                    "Chatbot"
+                ],
+                "summary": "Enviar mensaje al chatbot",
+                "operationId": "d41ec291d89fd716998005e846ce8418",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "¿Qué servicios ofrecen?"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "example": "unique-session-id"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Respuesta del chatbot",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "response": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error en el servidor"
+                    }
+                }
+            }
+        },
+        "/api/personas": {
+            "get": {
+                "tags": [
+                    "Personas"
+                ],
+                "summary": "Obtener todas las personas",
+                "operationId": "8601618afc784c4736e52022f7f6f047",
+                "responses": {
+                    "200": {
+                        "description": "Lista de personas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "personas": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Personas"
+                ],
+                "summary": "Crear una nueva persona",
+                "operationId": "d016dca10e1a596471fe5aa5d4c99841",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre",
+                                    "Apellido1",
+                                    "CI",
+                                    "Correo"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Juan"
+                                    },
+                                    "Apellido1": {
+                                        "type": "string",
+                                        "example": "Pérez"
+                                    },
+                                    "Apellido2": {
+                                        "type": "string",
+                                        "example": "García"
+                                    },
+                                    "CI": {
+                                        "type": "integer",
+                                        "example": 12345678
+                                    },
+                                    "Genero": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Persona creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "persona": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/personas/{id}": {
+            "get": {
+                "tags": [
+                    "Personas"
+                ],
+                "summary": "Obtener una persona específica",
+                "operationId": "9b70ed1d108dd682ec86b7c48f328884",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la persona",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Persona encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "persona": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Persona no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/postulaciones": {
+            "get": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Obtener todas las postulaciones del estudiante",
+                "operationId": "getPostulaciones",
+                "responses": {
+                    "200": {
+                        "description": "Lista de postulaciones",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "postulaciones": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Postulaciones obtenidas con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Crear una nueva postulación",
+                "operationId": "postular",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_Trabajo"
+                                ],
+                                "properties": {
+                                    "Id_Trabajo": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Postulación creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "postulacion": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/postulaciones/curriculum": {
+            "get": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Obtener el currículum en PDF del estudiante",
+                "operationId": "getCurriculumPDF",
+                "responses": {
+                    "200": {
+                        "description": "Currículum encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "cv": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "404": {
+                        "description": "Currículum no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Obtener todos los roles",
+                "operationId": "9fa07677d6ca82e42fb3002f1a229295",
+                "responses": {
+                    "200": {
+                        "description": "Lista de roles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "roles": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Crear un nuevo rol",
+                "operationId": "a3549828f62dfa78f6e9a3074c416372",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Administrador"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rol creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "rol": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Obtener un rol específico",
+                "operationId": "c6c2d9200d74017052e538857039d540",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "rol": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Actualizar un rol existente",
+                "operationId": "d2f7da4cc75a13746482ef71d7521150",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Administrador"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rol actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "rol": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol actualizado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Eliminar un rol",
+                "operationId": "429d91b2d5c8a8aa91002cabca373303",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Rol no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/telefonos": {
+            "get": {
+                "tags": [
+                    "Teléfonos"
+                ],
+                "summary": "Obtener todos los teléfonos",
+                "operationId": "100b3136f7f9d73c5987ff67b9a18540",
+                "responses": {
+                    "200": {
+                        "description": "Lista de teléfonos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "telefonos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Teléfonos"
+                ],
+                "summary": "Crear un nuevo teléfono",
+                "operationId": "8c3d2b6a3ba16178abc62b73fb735fde",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Numero"
+                                ],
+                                "properties": {
+                                    "Numero": {
+                                        "type": "integer",
+                                        "example": 76543210
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Teléfono creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "telefono": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Teléfono creado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/telefonos/{id}": {
+            "get": {
+                "tags": [
+                    "Teléfonos"
+                ],
+                "summary": "Obtener un teléfono específico",
+                "operationId": "28cde416a8402f7a688b9d3294e1f0c6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del teléfono",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Teléfono encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "telefono": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Teléfono no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Teléfonos"
+                ],
+                "summary": "Actualizar un teléfono existente",
+                "operationId": "597a728cc6891de307fff364cfc6906c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del teléfono",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Numero"
+                                ],
+                                "properties": {
+                                    "Numero": {
+                                        "type": "integer",
+                                        "example": 76543210
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Teléfono actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "telefono": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Teléfono actualizado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Teléfono no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/admin/postulaciones": {
+            "get": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Listar todas las postulaciones",
+                "operationId": "getAllPostulaciones",
+                "responses": {
+                    "200": {
+                        "description": "Lista de postulaciones"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Crear una nueva postulación",
+                "operationId": "createAplication",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_Trabajo",
+                                    "Id_Candidato",
+                                    "Estado",
+                                    "Fecha_Envio"
+                                ],
+                                "properties": {
+                                    "Id_Trabajo": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_Candidato": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "Estado": {
+                                        "type": "string",
+                                        "example": "pendiente"
+                                    },
+                                    "Fecha_Envio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-05-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Postulación creada correctamente"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/admin/postulaciones/{id}": {
+            "get": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Obtener una postulación por ID",
+                "operationId": "getPostulacionById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la postulación",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Postulación encontrada"
+                    },
+                    "404": {
+                        "description": "Postulación no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Actualizar una postulación",
+                "operationId": "updateAplication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la postulación",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_Trabajo",
+                                    "Id_Candidato",
+                                    "Estado",
+                                    "Fecha_Envio"
+                                ],
+                                "properties": {
+                                    "Id_Trabajo": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_Candidato": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "Estado": {
+                                        "type": "string",
+                                        "example": "aceptado"
+                                    },
+                                    "Fecha_Envio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-05-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Postulación actualizada correctamente"
+                    },
+                    "404": {
+                        "description": "Postulación no encontrada"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Postulaciones"
+                ],
+                "summary": "Eliminar una postulación",
+                "operationId": "deleteAplication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la postulación",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Postulación eliminada correctamente"
+                    },
+                    "404": {
+                        "description": "Postulación no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Registrar un nuevo usuario",
+                "operationId": "76831fe15cbe0773a4f0075792cf3038",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Usuario",
+                                    "Rol",
+                                    "Clave"
+                                ],
+                                "properties": {
+                                    "Usuario": {
+                                        "type": "string",
+                                        "example": "usuario123"
+                                    },
+                                    "Rol": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Clave": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "Clave_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado exitosamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "409": {
+                        "description": "El usuario ya existe"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Iniciar sesión",
+                "operationId": "41a7987677f895586f3ac19fc2fc60fb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Usuario",
+                                    "Clave"
+                                ],
+                                "properties": {
+                                    "Usuario": {
+                                        "type": "string",
+                                        "example": "usuario123"
+                                    },
+                                    "Clave": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales inválidas"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/auth/user": {
+            "get": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Obtener información del usuario autenticado",
+                "operationId": "ee03e06810d29bda5f4bcc7e0bbdd7b7",
+                "responses": {
+                    "200": {
+                        "description": "Información del usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Cerrar sesión",
+                "operationId": "fad9546aab17f09817053038a6f99cba",
+                "responses": {
+                    "200": {
+                        "description": "Sesión cerrada exitosamente"
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/empresas": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Obtener todas las empresas",
+                "operationId": "cd6b681dde1746499cbf4c861151a35d",
+                "responses": {
+                    "200": {
+                        "description": "Lista de empresas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "companys": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Crear una nueva empresa",
+                "operationId": "6fbd14a769eabbc53440ac31627d4cf4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre",
+                                    "Id_Sector",
+                                    "Correo"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Empresa XYZ"
+                                    },
+                                    "Id_Sector": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "contacto@empresa.com"
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción de la empresa"
+                                    },
+                                    "Redes_Sociales": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "red": {
+                                                    "type": "string",
+                                                    "example": "Facebook"
+                                                },
+                                                "enlace": {
+                                                    "type": "string",
+                                                    "format": "uri",
+                                                    "example": "https://facebook.com/empresa"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "Direccion": {
+                                        "type": "string",
+                                        "example": "Calle Principal #123"
+                                    },
+                                    "Contacto": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "Direccion_Web": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://empresa.com"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "telefonos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 76543210
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Empresa creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "company": {
+                                            "type": "object"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "409": {
+                        "description": "La empresa ya existe"
+                    }
+                }
+            }
+        },
+        "/api/empresas/usuario": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Obtener empresa del usuario autenticado",
+                "operationId": "bfc83524e4cc17b8f9a126f58f948a43",
+                "responses": {
+                    "200": {
+                        "description": "Empresa encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "company": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/empresas/sectores": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Obtener todos los sectores",
+                "operationId": "f61778b85090060852b3312ad26a88b5",
+                "responses": {
+                    "200": {
+                        "description": "Lista de sectores",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sector": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/empresas/{id}/imagen": {
+            "delete": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Eliminar imagen de una empresa",
+                "operationId": "6849e6b2772a31dcb4143efd34e8d09b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagen eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/empresas/{id}": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Obtener una empresa específica",
+                "operationId": "445ba6dde1ef27e83f32b0af5e5b244a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "company": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Actualizar una empresa existente",
+                "operationId": "cd15858b51c2fc2ebc98b24511c8c732",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Empresa XYZ"
+                                    },
+                                    "Id_Sector": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "contacto@empresa.com"
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción actualizada"
+                                    },
+                                    "Redes_Sociales": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "red": {
+                                                    "type": "string",
+                                                    "example": "Facebook"
+                                                },
+                                                "enlace": {
+                                                    "type": "string",
+                                                    "format": "uri",
+                                                    "example": "https://facebook.com/empresa"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "Direccion": {
+                                        "type": "string",
+                                        "example": "Nueva Dirección #456"
+                                    },
+                                    "Contacto": {
+                                        "type": "string",
+                                        "example": "María García"
+                                    },
+                                    "Direccion_Web": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://empresa.com"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "telefonos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 76543210
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Empresa actualizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "company": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Eliminar una empresa",
+                "operationId": "cd6b3f549d533c8145b94471b99fda4a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/empresas/{id}/toggle": {
+            "put": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Cambiar el estado de una empresa",
+                "operationId": "2c82f1e1d599dc8f874049ad56a6f12f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estado cambiado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Activo",
+                                                "Inactivo"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/empresas/{id}/telefonos/{phoneId}": {
+            "delete": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Eliminar un teléfono de una empresa",
+                "operationId": "ce5400a82c0d00bb069a2e56461fd936",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "phoneId",
+                        "in": "path",
+                        "description": "ID del teléfono",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Teléfono eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Empresa o teléfono no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/empresas/{id}/credentials": {
+            "put": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Actualizar credenciales de una empresa",
+                "operationId": "d527c1cbfaaceef4b72bf65125699e59",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Usuario": {
+                                        "type": "string",
+                                        "example": "nuevo_usuario"
+                                    },
+                                    "Clave": {
+                                        "type": "string",
+                                        "example": "nueva_clave"
+                                    },
+                                    "Estado": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Activo",
+                                            "Inactivo"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credenciales actualizadas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "company": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Empresa no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/trabajos": {
+            "post": {
+                "tags": [
+                    "Trabajos"
+                ],
+                "summary": "Crear una nueva oferta de trabajo",
+                "operationId": "cddf2e63fe052837e8f9dc639af69a07",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Titulo",
+                                    "Descripcion",
+                                    "Requisitos",
+                                    "Competencia",
+                                    "Ubicacion",
+                                    "Modalidad",
+                                    "Fecha_Inicio",
+                                    "Estado",
+                                    "Tipo_Trabajo",
+                                    "Id_Empresa"
+                                ],
+                                "properties": {
+                                    "Titulo": {
+                                        "type": "string",
+                                        "example": "Desarrollador Web Senior"
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Buscamos un desarrollador web con experiencia en Laravel"
+                                    },
+                                    "Requisitos": {
+                                        "type": "string",
+                                        "example": "3 años de experiencia en desarrollo web"
+                                    },
+                                    "Competencia": {
+                                        "type": "string",
+                                        "example": "PHP, Laravel, MySQL"
+                                    },
+                                    "Ubicacion": {
+                                        "type": "string",
+                                        "example": "Santa Cruz"
+                                    },
+                                    "Salario": {
+                                        "type": "number",
+                                        "example": 5000
+                                    },
+                                    "Modalidad": {
+                                        "type": "string",
+                                        "example": "Presencial"
+                                    },
+                                    "Fecha_Inicio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-05-01"
+                                    },
+                                    "Fecha_Fin": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-06-01"
+                                    },
+                                    "Duracion": {
+                                        "type": "string",
+                                        "example": "6 meses"
+                                    },
+                                    "Estado": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Activo",
+                                            "Inactivo"
+                                        ]
+                                    },
+                                    "Tipo_Trabajo": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_Empresa": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Trabajo creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "trabajo": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/multimedia/{id}": {
+            "get": {
+                "tags": [
+                    "Multimedia"
+                ],
+                "summary": "Obtener un archivo multimedia específico",
+                "operationId": "getMultimedia",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del archivo multimedia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Archivo multimedia encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "multimedia": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Archivo multimedia no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Multimedia"
+                ],
+                "summary": "Eliminar un archivo multimedia específico",
+                "operationId": "deleteMultimedia",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del archivo multimedia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Archivo multimedia encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "multimedia": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Archivo multimedia no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/multimedia": {
+            "post": {
+                "tags": [
+                    "Multimedia"
+                ],
+                "summary": "Crear un nuevo archivo multimedia",
+                "operationId": "createMultimedia",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Titulo",
+                                    "Tipo"
+                                ],
+                                "properties": {
+                                    "Titulo": {
+                                        "type": "string",
+                                        "example": "Logo UTEPSA"
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Logo oficial de la universidad"
+                                    },
+                                    "Tipo": {
+                                        "type": "string",
+                                        "enum": [
+                                            "heroicon",
+                                            "Video"
+                                        ],
+                                        "example": "heroicon"
+                                    },
+                                    "Estado": {
+                                        "type": "string",
+                                        "example": "Activo"
+                                    },
+                                    "Nombre": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Archivo multimedia creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "multimedia": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error al procesar el archivo"
+                    }
+                }
+            }
+        },
+        "/api/curriculums": {
+            "get": {
+                "tags": [
+                    "Currículums"
+                ],
+                "summary": "Obtener todos los currículums",
+                "operationId": "54bef261c5adaf62d6ff6e26dc76f86a",
+                "responses": {
+                    "200": {
+                        "description": "Lista de currículums",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "resumes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Currículums"
+                ],
+                "summary": "Crear un nuevo currículum",
+                "operationId": "97b81ecfa2bc96fba2d45460ec1156aa",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_Estudiante",
+                                    "Descripcion",
+                                    "Habilidades"
+                                ],
+                                "properties": {
+                                    "Id_Estudiante": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Descripcion": {
+                                        "type": "string",
+                                        "example": "Desarrollador web con experiencia en Laravel"
+                                    },
+                                    "Habilidades": {
+                                        "type": "string",
+                                        "example": "PHP, Laravel, MySQL, JavaScript"
+                                    },
+                                    "Certificados": {
+                                        "type": "string",
+                                        "example": "AWS Certified Developer"
+                                    },
+                                    "Experiencia": {
+                                        "type": "string",
+                                        "example": "3 años como desarrollador web"
+                                    },
+                                    "Idiomas": {
+                                        "type": "string",
+                                        "example": "Español nativo, Inglés intermedio"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Currículum creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "resume": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/curriculums/{id}": {
+            "get": {
+                "tags": [
+                    "Currículums"
+                ],
+                "summary": "Obtener un currículum específico",
+                "operationId": "d7e47216edb91e6675328dfc11dc287c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del currículum",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Currículum encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "resume": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currículum no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/sectores": {
+            "get": {
+                "tags": [
+                    "Sectores"
+                ],
+                "summary": "Obtener todos los sectores",
+                "operationId": "95f2659c4608b1575bcef66b0f1c2e11",
+                "responses": {
+                    "200": {
+                        "description": "Lista de sectores",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sectors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Sectores"
+                ],
+                "summary": "Crear un nuevo sector",
+                "operationId": "f60d469a48f1d26dddf973dc9fabdf55",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Tecnología"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sector creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sector": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sectores/{id}": {
+            "put": {
+                "tags": [
+                    "Sectores"
+                ],
+                "summary": "Actualizar un sector existente",
+                "operationId": "7c474f51588d11422743e743581c8c8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del sector",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nombre"
+                                ],
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Tecnología"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sector actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sector": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Sectores"
+                ],
+                "summary": "Eliminar un sector",
+                "operationId": "38a347cf3d9f18e9780d1c0d5f00d500",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del sector",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sector eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sector deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/estudiantes": {
+            "get": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Obtener todos los estudiantes",
+                "operationId": "eb64fba4d0dc93107941b4ed3f031bee",
+                "responses": {
+                    "200": {
+                        "description": "Lista de estudiantes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "students": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Crear un nuevo estudiante",
+                "operationId": "148668ff34a8035466195da68bf1889b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nro_Registro",
+                                    "CI",
+                                    "Nombre",
+                                    "Apellido1",
+                                    "telefonos",
+                                    "Correo",
+                                    "Id_Carrera"
+                                ],
+                                "properties": {
+                                    "Nro_Registro": {
+                                        "type": "string",
+                                        "example": "2023001"
+                                    },
+                                    "CI": {
+                                        "type": "integer",
+                                        "example": 12345678
+                                    },
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Juan"
+                                    },
+                                    "Apellido1": {
+                                        "type": "string",
+                                        "example": "Pérez"
+                                    },
+                                    "Apellido2": {
+                                        "type": "string",
+                                        "example": "García"
+                                    },
+                                    "Genero": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "telefonos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 76543210
+                                        }
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    },
+                                    "Id_Carrera": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Estudiante creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "estudiante": {
+                                            "type": "object"
+                                        },
+                                        "persona": {
+                                            "type": "object"
+                                        },
+                                        "usuario": {
+                                            "type": "object"
+                                        },
+                                        "telefonos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/estudiantes/{id}": {
+            "get": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Obtener un estudiante específico",
+                "operationId": "86c82f452e1b76aa11d96cd7abadb9e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del estudiante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estudiante encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "student": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Estudiante no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Actualizar un estudiante existente",
+                "operationId": "579a42b4591857838eaccda8a96d1ddc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del estudiante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Nro_Registro",
+                                    "CI",
+                                    "Nombre",
+                                    "Apellido1",
+                                    "telefonos",
+                                    "Correo",
+                                    "Id_Carrera"
+                                ],
+                                "properties": {
+                                    "Nro_Registro": {
+                                        "type": "string",
+                                        "example": "2023001"
+                                    },
+                                    "CI": {
+                                        "type": "integer",
+                                        "example": 12345678
+                                    },
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Juan"
+                                    },
+                                    "Apellido1": {
+                                        "type": "string",
+                                        "example": "Pérez"
+                                    },
+                                    "Apellido2": {
+                                        "type": "string",
+                                        "example": "García"
+                                    },
+                                    "Genero": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "telefonos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 76543210
+                                        }
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    },
+                                    "Id_Carrera": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Estudiante actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "estudiante": {
+                                            "type": "object"
+                                        },
+                                        "persona": {
+                                            "type": "object"
+                                        },
+                                        "usuario": {
+                                            "type": "object"
+                                        },
+                                        "telefonos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Estudiante no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Eliminar un estudiante",
+                "operationId": "7cf1a263f888ddfe3d39bb4a78a57686",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del estudiante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estudiante eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Estudiante no encontrado"
+                    },
+                    "500": {
+                        "description": "Error del servidor"
+                    }
+                }
+            }
+        },
+        "/api/estudiantes/{id}/credentials": {
+            "put": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Actualizar credenciales de un estudiante",
+                "operationId": "05ef6d7aebb43a1afc1aad26581a92bc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del estudiante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Usuario",
+                                    "Clave"
+                                ],
+                                "properties": {
+                                    "Usuario": {
+                                        "type": "string",
+                                        "example": "nuevo_usuario"
+                                    },
+                                    "Clave": {
+                                        "type": "string",
+                                        "example": "nueva_clave"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credenciales actualizadas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "usuario": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/estudiantes/curriculum": {
+            "get": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Obtener currículum del estudiante",
+                "operationId": "9b783ab688ec6b30f9ab0b415c867ecf",
+                "responses": {
+                    "200": {
+                        "description": "Currículum encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "formSettings": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Estudiante no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Estudiantes"
+                ],
+                "summary": "Guardar currículum del estudiante",
+                "operationId": "78dba1d9c229414581511bd248f976ef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "formSettings"
+                                ],
+                                "properties": {
+                                    "formSettings": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Currículum guardado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "curriculum": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Estudiante no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/testimonios": {
+            "get": {
+                "tags": [
+                    "Testimonios"
+                ],
+                "summary": "Obtener todos los testimonios",
+                "operationId": "aa80e27bf3e93553115cac75c3e35076",
+                "responses": {
+                    "200": {
+                        "description": "Lista de testimonios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "testimonials": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Testimonios"
+                ],
+                "summary": "Crear un nuevo testimonio",
+                "operationId": "c1c2dac55fc1f19257d3852102e44d19",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Titulo",
+                                    "Comentario"
+                                ],
+                                "properties": {
+                                    "Titulo": {
+                                        "type": "string",
+                                        "example": "Excelente experiencia"
+                                    },
+                                    "Comentario": {
+                                        "type": "string",
+                                        "example": "La plataforma me ayudó a encontrar mi primer trabajo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Testimonio creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "testimonial": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/testimonios/{id}/toggle": {
+            "put": {
+                "tags": [
+                    "Testimonios"
+                ],
+                "summary": "Cambiar el estado de un testimonio",
+                "operationId": "57066f27188c6d7b7c6dfbe2c1517336",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del testimonio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estado cambiado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensaje": {
+                                            "type": "string"
+                                        },
+                                        "estado": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Activo",
+                                                "Inactivo"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Testimonio no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/testimonios/{id}": {
+            "get": {
+                "tags": [
+                    "Testimonios"
+                ],
+                "summary": "Obtener un testimonio específico",
+                "operationId": "2cc1b60ccc616e4aac3daaa52969d18c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del testimonio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Testimonio encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "testimonial": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Testimonio no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/testimonios/validate": {
+            "post": {
+                "tags": [
+                    "Testimonios"
+                ],
+                "summary": "Validar contenido de un testimonio",
+                "operationId": "f35ed91866b4b73e4953e9ae48fccb42",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Titulo",
+                                    "Comentario"
+                                ],
+                                "properties": {
+                                    "Titulo": {
+                                        "type": "string",
+                                        "example": "Excelente experiencia"
+                                    },
+                                    "Comentario": {
+                                        "type": "string",
+                                        "example": "La plataforma me ayudó a encontrar mi primer trabajo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comentario validado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensaje": {
+                                            "type": "string"
+                                        },
+                                        "puntajes": {
+                                            "properties": {
+                                                "toxicidad": {
+                                                    "type": "number"
+                                                },
+                                                "insulto": {
+                                                    "type": "number"
+                                                },
+                                                "profanidad": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Contenido inapropiado"
+                    },
+                    "500": {
+                        "description": "Error en el servidor"
+                    }
+                }
+            }
+        },
+        "/api/usuarios": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtener todos los usuarios",
+                "operationId": "fd1cdc5528b88315022622225ec5f4b5",
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/usuarios/administrador": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Crear un nuevo usuario administrador",
+                "operationId": "04352fd0d388d1a8c923b0a05438fa20",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "CI",
+                                    "Nombre",
+                                    "Apellido1",
+                                    "Telefonos",
+                                    "Correo",
+                                    "Id_Rol"
+                                ],
+                                "properties": {
+                                    "CI": {
+                                        "type": "integer",
+                                        "example": 12345678
+                                    },
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Juan"
+                                    },
+                                    "Apellido1": {
+                                        "type": "string",
+                                        "example": "Pérez"
+                                    },
+                                    "Apellido2": {
+                                        "type": "string",
+                                        "example": "García"
+                                    },
+                                    "Genero": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "Telefonos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            76543210
+                                        ]
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    },
+                                    "Id_Rol": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_Carrera": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario administrador creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "persona": {
+                                            "type": "object"
+                                        },
+                                        "usuario": {
+                                            "type": "object"
+                                        },
+                                        "telefonos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error en el servidor"
+                    }
+                }
+            }
+        },
+        "/api/usuarios/administrador/{id}": {
+            "put": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Actualizar un usuario administrador",
+                "operationId": "b2e0ef0645d6492fe84b3dedd049911a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Nombre": {
+                                        "type": "string",
+                                        "example": "Juan"
+                                    },
+                                    "Apellido1": {
+                                        "type": "string",
+                                        "example": "Pérez"
+                                    },
+                                    "Apellido2": {
+                                        "type": "string",
+                                        "example": "García"
+                                    },
+                                    "CI": {
+                                        "type": "integer",
+                                        "example": 12345678
+                                    },
+                                    "Genero": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "Correo": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    },
+                                    "Id_Rol": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "telefonos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            76543210
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "persona": {
+                                            "type": "object"
+                                        },
+                                        "usuario": {
+                                            "type": "object"
+                                        },
+                                        "telefonos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error en el servidor"
+                    }
+                }
+            }
+        },
+        "/api/usuarios/administrador/{id}/credentials": {
+            "put": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Actualizar credenciales de un usuario administrador",
+                "operationId": "010220bd787ac61efc23bed9c836b96e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Usuario": {
+                                        "type": "string",
+                                        "example": "juan123"
+                                    },
+                                    "Id_Rol": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Clave": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "Clave_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credenciales actualizadas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/usuarios/{id}": {
+            "delete": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Eliminar un usuario",
+                "operationId": "a96c9b0d928d0591f4f4b91aa74eae44",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/usuarios/upload-image": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Subir imagen de perfil o banner",
+                "operationId": "856fd2b2e601f0b13a9800f8193ea0bd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Imagen",
+                                    "Tipo"
+                                ],
+                                "properties": {
+                                    "Imagen": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "Tipo": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Perfil",
+                                            "Banner"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Imagen subida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "multimedia": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error al subir la imagen"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticación Social",
+            "description": "Endpoints para autenticación con proveedores sociales"
+        },
+        {
+            "name": "Carreras",
+            "description": "Endpoints para gestionar carreras"
+        },
+        {
+            "name": "Chatbot",
+            "description": "Endpoints para interactuar con el chatbot"
+        },
+        {
+            "name": "Personas",
+            "description": "Endpoints para gestionar personas"
+        },
+        {
+            "name": "Postulaciones",
+            "description": "Endpoints para gestionar postulaciones"
+        },
+        {
+            "name": "Roles",
+            "description": "Endpoints para gestionar roles de usuario"
+        },
+        {
+            "name": "Teléfonos",
+            "description": "Endpoints para gestionar teléfonos"
+        },
+        {
+            "name": "Autenticación",
+            "description": "Endpoints para autenticación y gestión de usuarios"
+        },
+        {
+            "name": "Empresas",
+            "description": "Endpoints para gestionar empresas"
+        },
+        {
+            "name": "Trabajos",
+            "description": "Endpoints para gestionar ofertas de trabajo"
+        },
+        {
+            "name": "Multimedia",
+            "description": "Endpoints para gestionar archivos multimedia"
+        },
+        {
+            "name": "Currículums",
+            "description": "Endpoints para gestionar currículums"
+        },
+        {
+            "name": "Sectores",
+            "description": "Endpoints para gestionar sectores"
+        },
+        {
+            "name": "Estudiantes",
+            "description": "Endpoints para gestionar estudiantes"
+        },
+        {
+            "name": "Testimonios",
+            "description": "Endpoints para gestionar testimonios"
+        },
+        {
+            "name": "Usuarios",
+            "description": "Endpoints para gestionar usuarios"
+        }
+    ]
+}

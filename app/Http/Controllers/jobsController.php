@@ -14,8 +14,53 @@ use App\Models\Empresa;
 use Cloudinary\Api\Upload\UploadApi;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Tag(
+ *     name="Trabajos",
+ *     description="Endpoints para gestionar ofertas de trabajo"
+ * )
+ */
 class jobsController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/trabajos",
+     *     summary="Crear una nueva oferta de trabajo",
+     *     tags={"Trabajos"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Titulo", "Descripcion", "Requisitos", "Competencia", "Ubicacion", "Modalidad", "Fecha_Inicio", "Estado", "Tipo_Trabajo", "Id_Empresa"},
+     *             @OA\Property(property="Titulo", type="string", example="Desarrollador Web Senior"),
+     *             @OA\Property(property="Descripcion", type="string", example="Buscamos un desarrollador web con experiencia en Laravel"),
+     *             @OA\Property(property="Requisitos", type="string", example="3 años de experiencia en desarrollo web"),
+     *             @OA\Property(property="Competencia", type="string", example="PHP, Laravel, MySQL"),
+     *             @OA\Property(property="Ubicacion", type="string", example="Santa Cruz"),
+     *             @OA\Property(property="Salario", type="number", example=5000),
+     *             @OA\Property(property="Modalidad", type="string", example="Presencial"),
+     *             @OA\Property(property="Fecha_Inicio", type="string", format="date", example="2024-05-01"),
+     *             @OA\Property(property="Fecha_Fin", type="string", format="date", example="2024-06-01"),
+     *             @OA\Property(property="Duracion", type="string", example="6 meses"),
+     *             @OA\Property(property="Estado", type="string", enum={"Activo", "Inactivo"}),
+     *             @OA\Property(property="Tipo_Trabajo", type="integer", example=1),
+     *             @OA\Property(property="Id_Empresa", type="integer", example=1),
+     *             @OA\Property(property="imagen", type="string", format="binary")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Trabajo creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="trabajo", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function lastTenJob(){
         $job = Trabajo::with(['empresa', 'multimedia'])
             ->orderBy('created_at', 'desc')
@@ -91,17 +136,17 @@ class jobsController extends Controller
 
             if ($request->hasFile('imagen')) {
                 try {
-                    $imagen = $request->file('imagen'); 
+                    $imagen = $request->file('imagen');
                     $response = (new UploadApi())->upload($request->file('imagen')->getRealPath(), [
                         'folder' => 'trabajos_utepsa',
                         'resource_type' => 'image',
                     ]);
 
                     Multimedia::create([
-                        'Id_Trabajo' => $job->Id_Trabajo, 
+                        'Id_Trabajo' => $job->Id_Trabajo,
                         'Nombre' => $response['secure_url'],
                         'Tipo' => 'trabajo',
-                        'Estado' => 'Activo',       
+                        'Estado' => 'Activo',
                     ]);
                 }catch(error $e){
                     DB::rollback();
@@ -280,14 +325,14 @@ class jobsController extends Controller
                 'mensaje' => 'Trabajo no encontrado'
             ], 404);
         }
-        
+
         $request->validate([
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         return response()->json([
             'mensaje' => 'Imágenes subidas correctamente',
-            #'archivos' => 
+            #'archivos' =>
         ], 200);
     }
     public function getjobsByType($type){

@@ -7,8 +7,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Cloudinary\Api\Upload\UploadApi;
 
+/**
+ * @OA\Tag(
+ *     name="Multimedia",
+ *     description="Endpoints para gestionar archivos multimedia"
+ * )
+ */
 class multimedia_controller extends Controller
 {
+    /**
+     * @OA\Delete(
+     *     path="/api/multimedia/{id}",
+     *     summary="Eliminar un archivo multimedia específico",
+     *     operationId="deleteMultimedia",
+     *     tags={"Multimedia"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del archivo multimedia",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Archivo multimedia encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="multimedia", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Archivo multimedia no encontrado"
+     *     )
+     * )
+     */
     public function deleteMultimedia($id) {
         try {
             $multimedia = Multimedia::where('Id_Multimedia', $id)
@@ -49,6 +81,32 @@ class multimedia_controller extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/multimedia/{id}",
+     *     summary="Obtener un archivo multimedia específico",
+     *     operationId="getMultimedia",
+     *     tags={"Multimedia"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del archivo multimedia",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Archivo multimedia encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="multimedia", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Archivo multimedia no encontrado"
+     *     )
+     * )
+     */
     public function getMultimedia($id) {
         try {
             $multimedia = multimedia::findOrFail($id);
@@ -63,6 +121,40 @@ class multimedia_controller extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/multimedia",
+     *     summary="Crear un nuevo archivo multimedia",
+     *     operationId="createMultimedia",
+     *     tags={"Multimedia"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Titulo", "Tipo"},
+     *             @OA\Property(property="Titulo", type="string", example="Logo UTEPSA"),
+     *             @OA\Property(property="Descripcion", type="string", example="Logo oficial de la universidad"),
+     *             @OA\Property(property="Tipo", type="string", enum={"heroicon", "Video"}, example="heroicon"),
+     *             @OA\Property(property="Estado", type="string", example="Activo"),
+     *             @OA\Property(property="Nombre", type="string", format="binary")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Archivo multimedia creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="multimedia", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al procesar el archivo"
+     *     )
+     * )
+     */
     public function createMultimedia(Request $request) {
         $rules = [
             'Titulo' => 'required|string|max:255',

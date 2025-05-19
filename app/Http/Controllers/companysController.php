@@ -14,8 +14,28 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Usuario;
 use Cloudinary\Api\Upload\UploadApi;
 
+/**
+ * @OA\Tag(
+ *     name="Empresas",
+ *     description="Endpoints para gestionar empresas"
+ * )
+ */
 class companysController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/empresas",
+     *     summary="Obtener todas las empresas",
+     *     tags={"Empresas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de empresas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="companys", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
     public function getAlllComapanys(){
         $companys = Empresa::with([
             'usuario.rol',
@@ -28,6 +48,25 @@ class companysController extends Controller
             'companys' => $companys
         ], 200);
     }
+    /**
+     * @OA\Get(
+     *     path="/api/empresas/usuario",
+     *     summary="Obtener empresa del usuario autenticado",
+     *     tags={"Empresas"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Empresa encontrada",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="company", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
     public function getCompanyByUser(){
         $user = Auth::user();
         $company = Empresa::with('usuario', 'multimedia', 'telefonos')->where('Id_Usuario', $user->Id_Usuario)->first();
@@ -35,12 +74,69 @@ class companysController extends Controller
             'company' => $company
         ], 200);
     }
+    /**
+     * @OA\Get(
+     *     path="/api/empresas/sectores",
+     *     summary="Obtener todos los sectores",
+     *     tags={"Empresas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de sectores",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="sector", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
     public function getSector(){
         $sector = Sector::all();
         return response()->json([
             'sector' => $sector
         ], 200);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/empresas",
+     *     summary="Crear una nueva empresa",
+     *     tags={"Empresas"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Nombre", "Id_Sector", "Correo"},
+     *             @OA\Property(property="Nombre", type="string", example="Empresa XYZ"),
+     *             @OA\Property(property="Id_Sector", type="integer", example=1),
+     *             @OA\Property(property="Correo", type="string", format="email", example="contacto@empresa.com"),
+     *             @OA\Property(property="Descripcion", type="string", example="Descripción de la empresa"),
+     *             @OA\Property(property="Redes_Sociales", type="array", @OA\Items(
+     *                 @OA\Property(property="red", type="string", example="Facebook"),
+     *                 @OA\Property(property="enlace", type="string", format="uri", example="https://facebook.com/empresa")
+     *             )),
+     *             @OA\Property(property="Direccion", type="string", example="Calle Principal #123"),
+     *             @OA\Property(property="Contacto", type="string", example="Juan Pérez"),
+     *             @OA\Property(property="Direccion_Web", type="string", format="uri", example="https://empresa.com"),
+     *             @OA\Property(property="imagen", type="string", format="binary"),
+     *             @OA\Property(property="telefonos", type="array", @OA\Items(type="integer", example=76543210))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Empresa creada exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="company", type="object"),
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="La empresa ya existe"
+     *     )
+     * )
+     */
     public function createCompany(Request $request){
         $redesSociales = $request->input('Redes_Sociales');
         if (is_string($redesSociales)) {
@@ -62,32 +158,32 @@ class companysController extends Controller
             'telefonos'          => 'nullable|array',
             'telefonos.*'        => 'sometimes|nullable|integer|digits_between:7,15'
         ]);
-    
+
         if ($validate->fails()) {
             return response()->json([
                 'errors' => $validate->errors()
             ], 422);
         }
-    
+
         $existingCompany = Empresa::where('Nombre', $request->Nombre)->first();
         if ($existingCompany) {
             return response()->json([
                 'message' => 'Company already exists'
             ], 409);
         }
-    
+
         try {
             DB::beginTransaction();
-        
+
             $rol = Rol::where('Nombre', 'Empresa')->first();
-        
+
             $user = Usuario::create([
                 'Usuario' => $request->Correo,
                 'Clave' => bcrypt(12345678),
                 'Id_Rol' => $rol->Id_Rol,
                 'Estado' => 'activo'
             ]);
-        
+
             $empresa = Empresa::create([
                 'Nombre'        => $request->Nombre,
                 'Id_Sector'     => $request->Id_Sector,
@@ -99,7 +195,7 @@ class companysController extends Controller
                 'Direccion_Web' => $request->Direccion_Web,
                 'Id_Usuario'    => $user->Id_Usuario
             ]);
-        
+
             if ($request->has('telefonos') && !empty($request->telefonos)) {
                 foreach ($request->telefonos as $numero) {
                     if ($numero) {
@@ -109,23 +205,23 @@ class companysController extends Controller
                     }
                 }
             }
-        
+
             if ($request->hasFile('imagen')) {
                 $imagen = $request->file('imagen');
                 $response = (new UploadApi())->upload($imagen->getRealPath(), [
                     'folder' => 'trabajos_utepsa',
                     'resource_type' => 'image'
                 ]);
-            
+
                 Multimedia::create([
                     'Id_Usuario' => $user->Id_Usuario,
                     'Tipo'       => 'logo',
                     'Nombre'     => $response['secure_url']
                 ]);
             }
-        
+
             DB::commit();
-        
+
             return response()->json([
                 'message' => 'Company and user created successfully',
                 'company' => $empresa->load('telefonos'),
@@ -141,33 +237,53 @@ class companysController extends Controller
             ], 500);
         }
     }
+    /**
+     * @OA\Delete(
+     *     path="/api/empresas/{id}/imagen",
+     *     summary="Eliminar imagen de una empresa",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Imagen eliminada exitosamente"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa no encontrada"
+     *     )
+     * )
+     */
     public function deleteImageCompany(Request $request, $id){
         $company = Empresa::with('usuario.multimedia')->find($id);
-        
+
         if (!$company) {
             return response()->json([
                 'message' => 'Company not found'
         ], 404);
           }
-        
+
           try {
             DB::beginTransaction();
-        
+
             foreach ($company->usuario->multimedia as $media) {
             if ($media->Nombre) {
               $publicId = $this->getPublicIdFromUrl($media->Nombre);
               if ($publicId) {
               $this->eliminarDeCloudinary($publicId);
-              } else {
-              Log::warning("No se pudo extraer el publicId de la URL: " . $media->Nombre);
               }
             }
             }
-        
+
             $company->usuario->multimedia()->delete();
-        
+
             DB::commit();
-        
+
             return response()->json([
             'message' => 'Company images deleted successfully'
             ], 200);
@@ -179,7 +295,32 @@ class companysController extends Controller
             ], 500);
           }
           }
-    
+
+    /**
+     * @OA\Get(
+     *     path="/api/empresas/{id}",
+     *     summary="Obtener una empresa específica",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Empresa encontrada",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="company", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa no encontrada"
+     *     )
+     * )
+     */
     public function getCompany($id){
         $company = Empresa::with('usuario.rol', 'sector', 'usuario.multimedia', 'telefonos', 'trabajos', 'trabajos.multimedia',)->find($id);
         if (!$company) {
@@ -191,6 +332,54 @@ class companysController extends Controller
             'company' => $company
         ], 200);
     }
+    /**
+     * @OA\Put(
+     *     path="/api/empresas/{id}",
+     *     summary="Actualizar una empresa existente",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="Nombre", type="string", example="Empresa XYZ"),
+     *             @OA\Property(property="Id_Sector", type="integer", example=1),
+     *             @OA\Property(property="Correo", type="string", format="email", example="contacto@empresa.com"),
+     *             @OA\Property(property="Descripcion", type="string", example="Descripción actualizada"),
+     *             @OA\Property(property="Redes_Sociales", type="array", @OA\Items(
+     *                 @OA\Property(property="red", type="string", example="Facebook"),
+     *                 @OA\Property(property="enlace", type="string", format="uri", example="https://facebook.com/empresa")
+     *             )),
+     *             @OA\Property(property="Direccion", type="string", example="Nueva Dirección #456"),
+     *             @OA\Property(property="Contacto", type="string", example="María García"),
+     *             @OA\Property(property="Direccion_Web", type="string", format="uri", example="https://empresa.com"),
+     *             @OA\Property(property="imagen", type="string", format="binary"),
+     *             @OA\Property(property="telefonos", type="array", @OA\Items(type="integer", example=76543210))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Empresa actualizada exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="company", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa no encontrada"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function updateCompany(Request $request, $id){
         $company = Empresa::with('usuario.multimedia', 'telefonos')->find($id);
         if (!$company) {
@@ -231,11 +420,11 @@ class companysController extends Controller
                 'Direccion',
                 'Contacto',
                 'Direccion_Web',
-                'Descripcion', 
-                'Redes_Sociales' 
+                'Descripcion',
+                'Redes_Sociales'
             ]));
-            $company->Redes_Sociales = json_encode($request->Redes_Sociales); 
-            $company->save(); 
+            $company->Redes_Sociales = json_encode($request->Redes_Sociales);
+            $company->save();
             if ($request->has('Correo')) {
                 $company->usuario->update([
                     'Usuario' => $request->Correo
@@ -293,6 +482,28 @@ class companysController extends Controller
             ], 500);
         }
     }
+    /**
+     * @OA\Delete(
+     *     path="/api/empresas/{id}",
+     *     summary="Eliminar una empresa",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Empresa eliminada exitosamente"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa no encontrada"
+     *     )
+     * )
+     */
     public function deleteCompany($id){
         $company = Empresa::with('usuario.multimedia', 'telefonos')->find($id);
 
@@ -338,6 +549,32 @@ class companysController extends Controller
             ], 500);
         }
     }
+    /**
+     * @OA\Put(
+     *     path="/api/empresas/{id}/toggle",
+     *     summary="Cambiar el estado de una empresa",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estado cambiado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="status", type="string", enum={"Activo", "Inactivo"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa no encontrada"
+     *     )
+     * )
+     */
     public function toggleCompanyStatus($id){
         $company = Empresa::with('usuario')->find($id);
 
@@ -369,6 +606,35 @@ class companysController extends Controller
             ], 500);
         }
     }
+    /**
+     * @OA\Delete(
+     *     path="/api/empresas/{id}/telefonos/{phoneId}",
+     *     summary="Eliminar un teléfono de una empresa",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="phoneId",
+     *         in="path",
+     *         required=true,
+     *         description="ID del teléfono",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Teléfono eliminado exitosamente"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa o teléfono no encontrado"
+     *     )
+     * )
+     */
     public function deletePhone($id, $phoneId){
         $company = Empresa::with('telefonos')->find($id);
 
@@ -404,6 +670,44 @@ class companysController extends Controller
             ], 500);
         }
     }
+    /**
+     * @OA\Put(
+     *     path="/api/empresas/{id}/credentials",
+     *     summary="Actualizar credenciales de una empresa",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="Usuario", type="string", example="nuevo_usuario"),
+     *             @OA\Property(property="Clave", type="string", example="nueva_clave"),
+     *             @OA\Property(property="Estado", type="string", enum={"Activo", "Inactivo"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Credenciales actualizadas exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="company", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Empresa no encontrada"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function updateCredentials(Request $request, $id){
         $company = Empresa::with('usuario')->find($id);
 
@@ -474,10 +778,6 @@ class companysController extends Controller
     }
     private function eliminarDeCloudinary($publicId){
         $uploadApi = new UploadApi();
-      try {
         $uploadApi->destroy($publicId);
-      } catch (\Exception $e) {
-        \Log::error("Error al eliminar de Cloudinary: " . $e->getMessage());
-        }
     }
 }

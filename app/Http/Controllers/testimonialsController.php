@@ -8,8 +8,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @OA\Tag(
+ *     name="Testimonios",
+ *     description="Endpoints para gestionar testimonios"
+ * )
+ */
 class testimonialsController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/testimonios",
+     *     summary="Obtener todos los testimonios",
+     *     tags={"Testimonios"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de testimonios",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="testimonials", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
     public function allTestimonials()
     {
         $testimonials = Testimonio::with(['usuario.multimedia','usuario.personas.estudiantes.carreras'])
@@ -19,6 +39,32 @@ class testimonialsController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/testimonios/{id}/toggle",
+     *     summary="Cambiar el estado de un testimonio",
+     *     tags={"Testimonios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del testimonio",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estado cambiado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mensaje", type="string"),
+     *             @OA\Property(property="estado", type="string", enum={"Activo", "Inactivo"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Testimonio no encontrado"
+     *     )
+     * )
+     */
     public function toggleEstado($id)
     {
 
@@ -37,6 +83,33 @@ class testimonialsController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/testimonios",
+     *     summary="Crear un nuevo testimonio",
+     *     tags={"Testimonios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Titulo", "Comentario"},
+     *             @OA\Property(property="Titulo", type="string", example="Excelente experiencia"),
+     *             @OA\Property(property="Comentario", type="string", example="La plataforma me ayudó a encontrar mi primer trabajo")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Testimonio creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="testimonial", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function createTestimonial(Request $request)
     {
         $user = Auth::user();
@@ -58,6 +131,32 @@ class testimonialsController extends Controller
             'testimonial' => $testimonial
         ], 201);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/testimonios/{id}",
+     *     summary="Obtener un testimonio específico",
+     *     tags={"Testimonios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del testimonio",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Testimonio encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="testimonial", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Testimonio no encontrado"
+     *     )
+     * )
+     */
     public function getTestimonial($id)
     {
         $testimonial = Testimonio::find($id);
@@ -70,6 +169,7 @@ class testimonialsController extends Controller
             'testimonial' => $testimonial
         ], 200);
     }
+
     public function updateTestimonial(Request $request, $id)
     {
         $testimonial = Testimonio::find($id);
@@ -94,6 +194,7 @@ class testimonialsController extends Controller
             'testimonial' => $testimonial
         ], 200);
     }
+
     public function deleteTestimonial($id)
     {
         $testimonial = Testimonio::find($id);
@@ -107,6 +208,42 @@ class testimonialsController extends Controller
             'message' => 'Testimonio eliminado correctamente'
         ], 200);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/testimonios/validate",
+     *     summary="Validar contenido de un testimonio",
+     *     tags={"Testimonios"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Titulo", "Comentario"},
+     *             @OA\Property(property="Titulo", type="string", example="Excelente experiencia"),
+     *             @OA\Property(property="Comentario", type="string", example="La plataforma me ayudó a encontrar mi primer trabajo")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Comentario validado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="mensaje", type="string"),
+     *             @OA\Property(property="puntajes", type="object",
+     *                 @OA\Property(property="toxicidad", type="number"),
+     *                 @OA\Property(property="insulto", type="number"),
+     *                 @OA\Property(property="profanidad", type="number")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Contenido inapropiado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error en el servidor"
+     *     )
+     * )
+     */
     public function analizarComentario(Request $request)
     {
         $request->validate([

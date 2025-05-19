@@ -13,8 +13,35 @@ use Illuminate\Support\Facades\Auth;
 
 use Cloudinary\Api\Upload\UploadApi;
 
+/**
+ * @OA\Tag(
+ *     name="Postulaciones",
+ *     description="Endpoints para gestionar postulaciones a trabajos"
+ * )
+ */
 class PostulacionesController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/postulaciones",
+     *     summary="Obtener todas las postulaciones del estudiante",
+     *     operationId="getPostulaciones",
+     *     tags={"Postulaciones"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de postulaciones",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="postulaciones", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="message", type="string", example="Postulaciones obtenidas con éxito")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
     public function getPostulaciones()
     {
         $user = Auth::user()->load(['rol', 'personas.estudiantes',]);
@@ -24,6 +51,30 @@ class PostulacionesController extends Controller
         return response()->json(['postulaciones' => $postulaciones, 'message' => 'Postulaciones obtenidas con éxito']);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/postulaciones/curriculum",
+     *     summary="Obtener el currículum en PDF del estudiante",
+     *     operationId="getCurriculumPDF",
+     *     tags={"Postulaciones"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Currículum encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="cv", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Currículum no encontrado"
+     *     )
+     * )
+     */
     public function getCurriculumPDF()
     {
         $user = Auth::user()->load(['rol', 'personas.estudiantes', 'personas.telefonos', 'testimonios']);
@@ -36,6 +87,38 @@ class PostulacionesController extends Controller
         return response()->json($cv);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/postulaciones",
+     *     summary="Crear una nueva postulación",
+     *     operationId="postular",
+     *     tags={"Postulaciones"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Id_Trabajo"},
+     *             @OA\Property(property="Id_Trabajo", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Postulación creada exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="postulacion", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function postular(Request $request)
     {
 

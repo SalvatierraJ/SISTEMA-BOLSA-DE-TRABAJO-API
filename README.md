@@ -1,200 +1,249 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# API Backend - Bolsa de Trabajo UTEPSA
 
-## About Laravel
+Este proyecto es una API REST desarrollada en **Laravel** que gestiona la plataforma de bolsa de trabajo de UTEPSA. Proporciona funcionalidades para estudiantes, empresas y administradores, incluyendo autenticación mediante **Auth0**, uso de **JWT**, envío de correos, almacenamiento de archivos en **Cloudinary**, y análisis de texto con **Dialogflow y Perspective API**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tecnologías
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laravel** 10+
+- **Auth0** + JWT para autenticación social y tokens
+- **MySQL** para persistencia de datos
+- **Cloudinary** para almacenamiento de CVs
+- **Dialogflow** + **Perspective API** para análisis de lenguaje
+- **SMTP Gmail** para envío de correos
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Instalación
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clona el proyecto
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
 
-## Laravel Sponsors
+git clone https://github.com/UTEPSADESARROLLOSISTEMAS/SISTEMA-BOLSA-DE-TRABAJO-BACKEND.git
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+cd SISTEMA-BOLSA-DE-TRABAJO-BACKEND
 
-### Premium Partners
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 2. Instala dependencias
 
-## Contributing
+```bash
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+composer install
 
-## Code of Conduct
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Crea el archivo .env
 
-## Security Vulnerabilities
+Copia el archivo .env.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+example o usa este como base:
+
+```bash
+
+
+cp .env.example .env
+
+Luego configura tus variables:
+
+
+env
+
+Copy
+
+Edit
+
+APP_NAME=Laravel
+
+APP_ENV=local
+
+APP_URL=http://localhost
+
+APP_KEY= # Generado en el siguiente paso
+
+
+DB_CONNECTION=mysql
+
+DB_HOST=127.0.0.1
+
+DB_PORT=3306
+
+DB_DATABASE=sistema_bolsa_de_trabajo_backend
+
+DB_USERNAME=root
+
+DB_PASSWORD=
+
+
+# Auth0
+
+AUTH0_DOMAIN=utepsa.us.auth0.com
+
+AUTH0_CLIENT_SECRET=...
+
+
+# JWT
+
+JWT_SECRET=...
+
+
+# Cloudinary
+
+CLOUDINARY_URL=...
+
+```
+
+### 4. Genera la clave de la app
+
+```bash
+
 
 php artisan key:generate
 
-php artisan jwt:secret
 
-php artisan  storage:link
+```
 
-php artisan migrate 
+#### Ejecutar el servidor local
+
+```bash
 
 
-## License
+php artisan serve
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
 
-## 📂 **Autenticación (JWT)**
+API disponible en: http://localhost:8000
 
-Estos endpoints permiten el manejo de autenticación para ambos roles (`Estudiantes` y `Empresas`).
+# Documentación Swagger
 
-| Método | URL           | Descripción                                       |
-| ------- | ------------- | -------------------------------------------------- |
-| POST    | /api/register | Registrar nuevo usuario (Estudiante o Empresa).    |
-| POST    | /api/login    | Iniciar sesión y obtener JWT.                     |
-| POST    | /api/logout   | Cerrar sesión (invalidar token).                  |
-| GET     | /api/profile  | Obtener datos del usuario autenticado (Protegido). |
+La API está documentada con Swagger/OpenAPI.
 
----
+Generar documentación:
 
-## 📂 **Usuarios (`Usuario`)**
+```bash
 
-Usado para manejar la autenticación, perfiles, y gestión de cuentas.
 
-| Método | URL                | Descripción                    |
-| ------- | ------------------ | ------------------------------- |
-| GET     | /api/usuarios      | Listar todos los usuarios.      |
-| POST    | /api/usuarios      | Crear un nuevo usuario.         |
-| GET     | /api/usuarios/{id} | Obtener un usuario específico. |
-| PUT     | /api/usuarios/{id} | Actualizar un usuario.          |
-| DELETE  | /api/usuarios/{id} | Eliminar un usuario.            |
+php artisan l5-swagger:generate
 
----
+```
 
-## 📂 **Estudiantes (`Estudiante`)**
+Acceder en navegador:
 
-Acciones específicas para estudiantes autenticados.
+```bash
 
-| Método | URL                   | Descripción                                |
-| ------- | --------------------- | ------------------------------------------- |
-| GET     | /api/estudiantes      | Listar todos los estudiantes.               |
-| POST    | /api/estudiantes      | Crear un nuevo estudiante.                  |
-| GET     | /api/estudiantes/{id} | Obtener datos de un estudiante específico. |
-| PUT     | /api/estudiantes/{id} | Actualizar datos de un estudiante.          |
-| DELETE  | /api/estudiantes/{id} | Eliminar un estudiante.                     |
 
----
+http://localhost:8000/api/documentation
 
-## 📂 **Empresas (`Empresas`)**
+```
 
-Acciones específicas para empresas autenticadas.
+# Autenticación
 
-| Método | URL                | Descripción                              |
-| ------- | ------------------ | ----------------------------------------- |
-| GET     | /api/empresas      | Listar todas las empresas.                |
-| POST    | /api/empresas      | Crear una nueva empresa.                  |
-| GET     | /api/empresas/{id} | Obtener datos de una empresa específica. |
-| PUT     | /api/empresas/{id} | Actualizar datos de una empresa.          |
-| DELETE  | /api/empresas/{id} | Eliminar una empresa.                     |
+Social login y tokens
 
----
+El sistema usa Auth0 para login social (Google, Microsoft, GitHub), y genera JWT para proteger rutas.
 
-## 📂 **Trabajos (`Trabajo`)**
+Rutas protegidas usan middleware auth:api
 
-Publicación y gestión de trabajos por parte de las empresas.
+El token se envía en los headers:
 
-| Método | URL                | Descripción                               |
-| ------- | ------------------ | ------------------------------------------ |
-| GET     | /api/trabajos      | Listar todos los trabajos disponibles.     |
-| POST    | /api/trabajos      | Publicar un nuevo trabajo (Solo Empresas). |
-| GET     | /api/trabajos/{id} | Obtener detalles de un trabajo.            |
-| PUT     | /api/trabajos/{id} | Actualizar un trabajo.                     |
-| DELETE  | /api/trabajos/{id} | Eliminar un trabajo.                       |
+```http
 
----
 
-## 📂 **Postulaciones (`Postulacion`)**
+Authorization: Bearer {token}
 
-Acciones que permiten a los estudiantes postularse a trabajos.
+```
 
-| Método | URL                     | Descripción                                     |
-| ------- | ----------------------- | ------------------------------------------------ |
-| GET     | /api/postulaciones      | Listar todas las postulaciones.                  |
-| POST    | /api/postulaciones      | Crear una nueva postulación (Solo Estudiantes). |
-| GET     | /api/postulaciones/{id} | Obtener detalles de una postulación.            |
-| PUT     | /api/postulaciones/{id} | Actualizar una postulación.                     |
-| DELETE  | /api/postulaciones/{id} | Eliminar una postulación.                       |
+# Almacenamiento de archivos
 
----
+Los CVs y currículums de los estudiantes se almacenan en Cloudinary
 
-## 📂 **Fases (`Fase`)**
+Los archivos se validan por tipo, tamaño y se guardan junto al perfil del usuario
 
-Manejo de procesos dentro de las postulaciones (Progresos, Etapas, etc.).
+# Integración con IA
 
-| Método | URL             | Descripción                              |
-| ------- | --------------- | ----------------------------------------- |
-| GET     | /api/fases      | Listar todas las fases.                   |
-| POST    | /api/fases      | Crear una nueva fase en una postulación. |
-| GET     | /api/fases/{id} | Obtener detalles de una fase.             |
-| PUT     | /api/fases/{id} | Actualizar una fase.                      |
-| DELETE  | /api/fases/{id} | Eliminar una fase.                        |
+Se utiliza Dialogflow para análisis semántico de preguntas
 
----
+Perspective API para analizar lenguaje ofensivo o inapropiado en descripciones o mensajes
 
-## 📂 **Curriculum (`Curriculum`)**
+# Correo
 
-Creación y gestión del curriculum de un estudiante.
+El sistema envía notificaciones automáticas por correo a las empresas:
 
-| Método | URL                   | Descripción                       |
-| ------- | --------------------- | ---------------------------------- |
-| GET     | /api/curriculums      | Listar todos los curriculums.      |
-| POST    | /api/curriculums      | Crear un nuevo curriculum.         |
-| GET     | /api/curriculums/{id} | Obtener un curriculum específico. |
-| PUT     | /api/curriculums/{id} | Actualizar un curriculum.          |
-| DELETE  | /api/curriculums/{id} | Eliminar un curriculum.            |
+Cuando un estudiante se postula
 
----
+Cuando se aprueba una oferta
 
-## 📂 **Testimonios (`Testimonios`)**
+Usa configuración SMTP de Gmail en .env:
 
-Manejo de testimonios que pueden dar los estudiantes sobre sus experiencias.
+```env
 
-| Método | URL                   | Descripción                       |
-| ------- | --------------------- | ---------------------------------- |
-| GET     | /api/testimonios      | Listar todos los testimonios.      |
-| POST    | /api/testimonios      | Crear un nuevo testimonio.         |
-| GET     | /api/testimonios/{id} | Obtener un testimonio específico. |
-| PUT     | /api/testimonios/{id} | Actualizar un testimonio.          |
-| DELETE  | /api/testimonios/{id} | Eliminar un testimonio.            |
 
----
+MAIL_MAILER=smtp
+
+MAIL_HOST=smtp.gmail.com
+
+MAIL_PORT=587
+
+MAIL_USERNAME=utepsadesarrollosistemas@gmail.com
+
+MAIL_PASSWORD=...
+
+```
+
+# Seguridad
+
+Protegido con Auth0 y JWT
+
+Validación robusta con Laravel Validator
+
+Control de acceso por roles
+
+Lógica separada para estudiantes, empresas y admins
+
+# Estructura del proyecto
+
+```bash
+
+
+app/
+
+├── Http/
+
+│   ├── Controllers/
+
+│   │   ├── Auth/
+
+│   │   ├── PostulacionesController.php
+
+│   │   ├── EmpresaController.php
+
+│   │   ├── TrabajoController.php
+
+│   │   └── ...
+
+├── Models/
+
+├── Services/
+
+├── Providers/
+
+routes/
+
+├── api.php
+
+database/
+
+├── migrations/
+
+├── seeders/
+
+```
+
+# Contacto
+
+utepsadesarrollosistemas@gmail.com
+
+Proyecto académico para la Universidad Tecnológica Privada de Santa Cruz – UTEPSA

@@ -6,10 +6,27 @@ use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Tag(
+ *     name="Personas",
+ *     description="Endpoints para gestionar personas"
+ * )
+ */
 class PersonaController extends Controller
 {
     /**
-     * Mostrar todas las personas
+     * @OA\Get(
+     *     path="/api/personas",
+     *     summary="Obtener todas las personas",
+     *     tags={"Personas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de personas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="personas", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
@@ -20,7 +37,29 @@ class PersonaController extends Controller
     }
 
     /**
-     * Mostrar una persona específica
+     * @OA\Get(
+     *     path="/api/personas/{id}",
+     *     summary="Obtener una persona específica",
+     *     tags={"Personas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la persona",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Persona encontrada",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="persona", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Persona no encontrada"
+     *     )
+     * )
      */
     public function show($id)
     {
@@ -36,7 +75,34 @@ class PersonaController extends Controller
     }
 
     /**
-     * Crear una nueva persona
+     * @OA\Post(
+     *     path="/api/personas",
+     *     summary="Crear una nueva persona",
+     *     tags={"Personas"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Nombre", "Apellido1", "CI", "Correo"},
+     *             @OA\Property(property="Nombre", type="string", example="Juan"),
+     *             @OA\Property(property="Apellido1", type="string", example="Pérez"),
+     *             @OA\Property(property="Apellido2", type="string", example="García"),
+     *             @OA\Property(property="CI", type="integer", example=12345678),
+     *             @OA\Property(property="Genero", type="boolean", example=true),
+     *             @OA\Property(property="Correo", type="string", format="email", example="juan@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Persona creada exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="persona", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
      */
     public function store(Request $request)
     {

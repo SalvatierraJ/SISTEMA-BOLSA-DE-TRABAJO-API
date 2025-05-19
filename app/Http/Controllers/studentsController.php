@@ -12,8 +12,28 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Tag(
+ *     name="Estudiantes",
+ *     description="Endpoints para gestionar estudiantes"
+ * )
+ */
 class studentsController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/estudiantes",
+     *     summary="Obtener todos los estudiantes",
+     *     tags={"Estudiantes"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de estudiantes",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="students", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
     public function allStudents()
     {
         $students = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras'])
@@ -23,6 +43,47 @@ class studentsController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/estudiantes",
+     *     summary="Crear un nuevo estudiante",
+     *     tags={"Estudiantes"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Nro_Registro", "CI", "Nombre", "Apellido1", "telefonos", "Correo", "Id_Carrera"},
+     *             @OA\Property(property="Nro_Registro", type="string", example="2023001"),
+     *             @OA\Property(property="CI", type="integer", example=12345678),
+     *             @OA\Property(property="Nombre", type="string", example="Juan"),
+     *             @OA\Property(property="Apellido1", type="string", example="Pérez"),
+     *             @OA\Property(property="Apellido2", type="string", example="García"),
+     *             @OA\Property(property="Genero", type="boolean", example=true),
+     *             @OA\Property(property="telefonos", type="array", @OA\Items(type="integer", example=76543210)),
+     *             @OA\Property(property="Correo", type="string", format="email", example="juan@example.com"),
+     *             @OA\Property(property="Id_Carrera", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Estudiante creado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="estudiante", type="object"),
+     *             @OA\Property(property="persona", type="object"),
+     *             @OA\Property(property="usuario", type="object"),
+     *             @OA\Property(property="telefonos", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
     public function createStudent(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -106,6 +167,31 @@ class studentsController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/estudiantes/{id}",
+     *     summary="Obtener un estudiante específico",
+     *     tags={"Estudiantes"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del estudiante",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estudiante encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="student", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estudiante no encontrado"
+     *     )
+     * )
+     */
     public function getStudent($id)
     {
         $student = Estudiante::with(['persona.telefonos', 'persona.usuario', 'carreras', 'curricula', 'postulacions'])
@@ -120,6 +206,54 @@ class studentsController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/estudiantes/{id}",
+     *     summary="Actualizar un estudiante existente",
+     *     tags={"Estudiantes"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del estudiante",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Nro_Registro", "CI", "Nombre", "Apellido1", "telefonos", "Correo", "Id_Carrera"},
+     *             @OA\Property(property="Nro_Registro", type="string", example="2023001"),
+     *             @OA\Property(property="CI", type="integer", example=12345678),
+     *             @OA\Property(property="Nombre", type="string", example="Juan"),
+     *             @OA\Property(property="Apellido1", type="string", example="Pérez"),
+     *             @OA\Property(property="Apellido2", type="string", example="García"),
+     *             @OA\Property(property="Genero", type="boolean", example=true),
+     *             @OA\Property(property="telefonos", type="array", @OA\Items(type="integer", example=76543210)),
+     *             @OA\Property(property="Correo", type="string", format="email", example="juan@example.com"),
+     *             @OA\Property(property="Id_Carrera", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estudiante actualizado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="estudiante", type="object"),
+     *             @OA\Property(property="persona", type="object"),
+     *             @OA\Property(property="usuario", type="object"),
+     *             @OA\Property(property="telefonos", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estudiante no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function updateStudent(Request $request, $id)
     {
         $estudiante = Estudiante::find($id);
@@ -203,6 +337,32 @@ class studentsController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/estudiantes/{id}",
+     *     summary="Eliminar un estudiante",
+     *     tags={"Estudiantes"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del estudiante",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estudiante eliminado exitosamente"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estudiante no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error del servidor"
+     *     )
+     * )
+     */
     public function deleteStudent($id)
     {
         try {
@@ -244,6 +404,44 @@ class studentsController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/estudiantes/{id}/credentials",
+     *     summary="Actualizar credenciales de un estudiante",
+     *     tags={"Estudiantes"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del estudiante",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"Usuario", "Clave"},
+     *             @OA\Property(property="Usuario", type="string", example="nuevo_usuario"),
+     *             @OA\Property(property="Clave", type="string", example="nueva_clave")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Credenciales actualizadas exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="usuario", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
     public function updateStudentCredentials(Request $request, $id)
     {
         $usuario = Usuario::find($id);
@@ -287,6 +485,33 @@ class studentsController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/estudiantes/curriculum",
+     *     summary="Guardar currículum del estudiante",
+     *     tags={"Estudiantes"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"formSettings"},
+     *             @OA\Property(property="formSettings", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Currículum guardado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="curriculum", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estudiante no encontrado"
+     *     )
+     * )
+     */
     public function saveCurriculum(Request $request)
     {
         $user = Auth::user()->load(['rol', 'personas.estudiantes.carreras', 'personas.telefonos', 'testimonios']);
@@ -314,6 +539,26 @@ class studentsController extends Controller
             'curriculum' => $curriculum
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/estudiantes/curriculum",
+     *     summary="Obtener currículum del estudiante",
+     *     tags={"Estudiantes"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Currículum encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="formSettings", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estudiante no encontrado"
+     *     )
+     * )
+     */
     public function getCurriculumEstudiante()
     {
         $user = Auth::user()->load(['rol', 'personas.estudiantes.carreras', 'personas.telefonos', 'testimonios']);

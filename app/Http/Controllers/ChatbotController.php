@@ -6,8 +6,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Services\DialogflowService;
 
+/**
+ * @OA\Tag(
+ *     name="Chatbot",
+ *     description="Endpoints para interactuar con el chatbot"
+ * )
+ */
 class ChatbotController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/chatbot/message",
+     *     summary="Enviar mensaje al chatbot",
+     *     tags={"Chatbot"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"message"},
+     *             @OA\Property(property="message", type="string", example="¿Qué servicios ofrecen?"),
+     *             @OA\Property(property="session_id", type="string", example="unique-session-id")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta del chatbot",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="response", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error en el servidor"
+     *     )
+     * )
+     */
     public function sendMessage(Request $request)
     {
         $accessToken = DialogflowService::getAccessToken();
